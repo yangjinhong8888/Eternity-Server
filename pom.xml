@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.eternity</groupId>
+    <artifactId>eternity-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
+    </properties>
+
+    <!--父模块的打包方式-->
+    <packaging>pom</packaging>
+    <!--模块信息-->
+    <modules>
+        <module>model</module>
+        <module>eternity-view-web</module>
+        <module>eternity-admin-web</module>
+    </modules>
+
+   <dependencyManagement>
+       <dependencies>
+           <dependency>
+               <groupId>com.eternity</groupId>
+               <artifactId>model</artifactId>
+               <version>0.0.1-SNAPSHOT</version>
+           </dependency>
+           <dependency>
+               <groupId>com.eternity</groupId>
+               <artifactId>eternity-view-web</artifactId>
+               <version>0.0.1-SNAPSHOT</version>
+           </dependency>
+           <dependency>
+               <groupId>com.eternity</groupId>
+               <artifactId>eternity-admin-web</artifactId>
+               <version>0.0.1-SNAPSHOT</version>
+           </dependency>
+       </dependencies>
+   </dependencyManagement>
+</project>
