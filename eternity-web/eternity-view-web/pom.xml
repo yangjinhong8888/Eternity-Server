@@ -6,10 +6,10 @@
     <parent>
         <groupId>com.eternity</groupId>
         <artifactId>eternity-web</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>eternity-view-web</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>eternity-view-web</name>
     <description>eternity-view-web</description>
     <!--打包方式-->

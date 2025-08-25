@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.eternity</groupId>
         <artifactId>eternity-server</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>eternity-web</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>eternity-web</name>
     <description>eternity-web</description>
 

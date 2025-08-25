@@ -6,10 +6,10 @@
     <parent>
         <groupId>com.eternity</groupId>
         <artifactId>eternity-server</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>eternity-model</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>eternity-model</name>
     <description>eternity-model</description>
     <dependencies>

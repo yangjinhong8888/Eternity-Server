@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.eternity</groupId>
     <artifactId>eternity-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <url/>
     <licenses>
         <license/>
@@ -38,13 +38,13 @@
         <!-- 指定 spring-webmvc 的版本，解决CVE-2025-41242 -->
         <spring-webmvc.version>6.2.10</spring-webmvc.version>
         <!--子模块版本-->
-        <eternity.common.version>0.0.1-SNAPSHOT</eternity.common.version>
-        <eternity.model.version>0.0.1-SNAPSHOT</eternity.model.version>
-        <eternity.dao.version>0.0.1-SNAPSHOT</eternity.dao.version>
-        <eternity.service.version>0.0.1-SNAPSHOT</eternity.service.version>
-        <eternity.web.version>0.0.1-SNAPSHOT</eternity.web.version>
-        <eternity.web.view.version>0.0.1-SNAPSHOT</eternity.web.view.version>
-        <eternity.web.admin.version>0.0.1-SNAPSHOT</eternity.web.admin.version>
+        <eternity.common.version>0.0.1</eternity.common.version>
+        <eternity.model.version>0.0.1</eternity.model.version>
+        <eternity.dao.version>0.0.1</eternity.dao.version>
+        <eternity.service.version>0.0.1</eternity.service.version>
+        <eternity.web.version>0.0.1</eternity.web.version>
+        <eternity.web.view.version>0.0.1</eternity.web.view.version>
+        <eternity.web.admin.version>0.0.1</eternity.web.admin.version>
     </properties>
 
     <!--父模块的打包方式-->

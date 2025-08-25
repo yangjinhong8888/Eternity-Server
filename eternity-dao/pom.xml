@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.eternity</groupId>
         <artifactId>eternity-server</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>eternity-dao</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>eternity-dao</name>
     <description>eternity-dao</description>
 
