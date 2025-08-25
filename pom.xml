@@ -6,6 +6,19 @@
     <groupId>com.eternity</groupId>
     <artifactId>eternity-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+    <scm>
+        <connection/>
+        <developerConnection/>
+        <tag/>
+        <url/>
+    </scm>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -20,34 +33,84 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
+        <!-- 指定 spring-beans 的版本，解决CVE-2025-41242 -->
+        <spring-beans.version>6.2.10</spring-beans.version>
+        <!-- 指定 spring-webmvc 的版本，解决CVE-2025-41242 -->
+        <spring-webmvc.version>6.2.10</spring-webmvc.version>
+        <!--子模块版本-->
+        <eternity.common.version>0.0.1-SNAPSHOT</eternity.common.version>
+        <eternity.model.version>0.0.1-SNAPSHOT</eternity.model.version>
+        <eternity.dao.version>0.0.1-SNAPSHOT</eternity.dao.version>
+        <eternity.service.version>0.0.1-SNAPSHOT</eternity.service.version>
+        <eternity.web.version>0.0.1-SNAPSHOT</eternity.web.version>
+        <eternity.web.view.version>0.0.1-SNAPSHOT</eternity.web.view.version>
+        <eternity.web.admin.version>0.0.1-SNAPSHOT</eternity.web.admin.version>
     </properties>
 
     <!--父模块的打包方式-->
     <packaging>pom</packaging>
     <!--模块信息-->
     <modules>
-        <module>model</module>
-        <module>eternity-view-web</module>
-        <module>eternity-admin-web</module>
+        <module>eternity-common</module>
+        <module>eternity-model</module>
+        <module>eternity-dao</module>
+        <module>eternity-service</module>
+        <module>eternity-web</module>
     </modules>
 
    <dependencyManagement>
        <dependencies>
+           <!--模块依赖-->
            <dependency>
                <groupId>com.eternity</groupId>
-               <artifactId>model</artifactId>
-               <version>0.0.1-SNAPSHOT</version>
+               <artifactId>eternity-common</artifactId>
+               <version>${eternity.common.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>com.eternity</groupId>
+               <artifactId>eternity-dao</artifactId>
+               <version>${eternity.dao.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>com.eternity</groupId>
+               <artifactId>eternity-model</artifactId>
+               <version>${eternity.model.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>com.eternity</groupId>
+               <artifactId>eternity-service</artifactId>
+               <version>${eternity.service.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>com.eternity</groupId>
+               <artifactId>eternity-web</artifactId>
+               <version>${eternity.web.version}</version>
            </dependency>
            <dependency>
                <groupId>com.eternity</groupId>
                <artifactId>eternity-view-web</artifactId>
-               <version>0.0.1-SNAPSHOT</version>
+               <version>${eternity.web.view.version}</version>
            </dependency>
            <dependency>
                <groupId>com.eternity</groupId>
                <artifactId>eternity-admin-web</artifactId>
-               <version>0.0.1-SNAPSHOT</version>
+               <version>${eternity.web.admin.version}</version>
            </dependency>
+
+
+           <!--处理CVE-2025-41242问题-->
+           <dependency>
+               <groupId>org.springframework</groupId>
+               <artifactId>spring-beans</artifactId>
+               <version>${spring-beans.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework</groupId>
+               <artifactId>spring-webmvc</artifactId>
+               <version>${spring-webmvc.version}</version>
+           </dependency>
+
+
        </dependencies>
    </dependencyManagement>
 </project>

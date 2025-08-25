@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: eternity-view-web
+
+  profiles:
+    active: dev
