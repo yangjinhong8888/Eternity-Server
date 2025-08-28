@@ -1,12 +1,13 @@
-package com.eternity.eternityviewweb;
+package com.jinhongs.eternityadminweb;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EternityViewWebApplication {
+public class EternityAdminWebApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(EternityViewWebApplication.class, args);
+        SpringApplication.run(EternityAdminWebApplication.class, args);
     }
 
 }

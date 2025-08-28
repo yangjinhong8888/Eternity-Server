@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.eternity</groupId>
+        <groupId>com.jinhongs</groupId>
         <artifactId>eternity-server</artifactId>
         <version>0.0.1</version>
     </parent>
@@ -22,11 +22,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.eternity</groupId>
+            <groupId>com.jinhongs</groupId>
             <artifactId>eternity-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.eternity</groupId>
+            <groupId>com.jinhongs</groupId>
             <artifactId>eternity-model</artifactId>
         </dependency>
         <!--引入mybatis-plus-->

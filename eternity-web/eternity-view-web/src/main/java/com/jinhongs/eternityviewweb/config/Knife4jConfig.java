@@ -1,4 +1,4 @@
-package com.eternity.eternityadminweb.config;
+package com.jinhongs.eternityviewweb.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -13,8 +13,8 @@ public class Knife4jConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Eternity管理后台接口文档")
-                        .description("Eternity管理后台接口文档")
+                        .title("Eternity接口文档")
+                        .description("Eternity接口文档")
                         .version("V0.0.1")
                         .contact(new Contact().name("YangJinHong"))
                 );

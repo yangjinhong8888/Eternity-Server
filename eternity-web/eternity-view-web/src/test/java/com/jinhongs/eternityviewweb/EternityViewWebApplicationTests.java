@@ -1,10 +1,10 @@
-package com.eternity.eternityadminweb;
+package com.jinhongs.eternityviewweb;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EternityAdminWebApplicationTests {
+class EternityViewWebApplicationTests {
 
     @Test
     void contextLoads() {

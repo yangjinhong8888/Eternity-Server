@@ -25,7 +25,7 @@ springdoc:
   group-configs:
     - group: '管理后台'                        # 分组名称
       paths-to-match: '/**'                   # 匹配的路径模式
-      packages-to-scan: com.eternity.eternityadminweb   # 扫描的包路径
+      packages-to-scan: com.jinhongs.eternityadminweb   # 扫描的包路径
 
 knife4j:
   enable: true

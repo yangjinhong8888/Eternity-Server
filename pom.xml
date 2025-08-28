@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.eternity</groupId>
+    <groupId>com.jinhongs</groupId>
     <artifactId>eternity-server</artifactId>
     <version>0.0.1</version>
     <url/>
@@ -52,6 +52,7 @@
         <!--springdoc.common版本依赖于knife4，要保持同步-->
         <eternity.springdoc.common.version>2.3.0</eternity.springdoc.common.version>
         <eternity.mybatis.plus.generator>3.5.12</eternity.mybatis.plus.generator>
+        <eternity.mybatis.plus.annotation>3.5.12</eternity.mybatis.plus.annotation>
     </properties>
 
     <!--父模块的打包方式-->
@@ -69,37 +70,37 @@
        <dependencies>
            <!--模块依赖-->
            <dependency>
-               <groupId>com.eternity</groupId>
+               <groupId>com.jinhongs</groupId>
                <artifactId>eternity-common</artifactId>
                <version>${eternity.common.version}</version>
            </dependency>
            <dependency>
-               <groupId>com.eternity</groupId>
+               <groupId>com.jinhongs</groupId>
                <artifactId>eternity-dao</artifactId>
                <version>${eternity.dao.version}</version>
            </dependency>
            <dependency>
-               <groupId>com.eternity</groupId>
+               <groupId>com.jinhongs</groupId>
                <artifactId>eternity-model</artifactId>
                <version>${eternity.model.version}</version>
            </dependency>
            <dependency>
-               <groupId>com.eternity</groupId>
+               <groupId>com.jinhongs</groupId>
                <artifactId>eternity-service</artifactId>
                <version>${eternity.service.version}</version>
            </dependency>
            <dependency>
-               <groupId>com.eternity</groupId>
+               <groupId>com.jinhongs</groupId>
                <artifactId>eternity-web</artifactId>
                <version>${eternity.web.version}</version>
            </dependency>
            <dependency>
-               <groupId>com.eternity</groupId>
+               <groupId>com.jinhongs</groupId>
                <artifactId>eternity-view-web</artifactId>
                <version>${eternity.web.view.version}</version>
            </dependency>
            <dependency>
-               <groupId>com.eternity</groupId>
+               <groupId>com.jinhongs</groupId>
                <artifactId>eternity-admin-web</artifactId>
                <version>${eternity.web.admin.version}</version>
            </dependency>
@@ -129,6 +130,11 @@
                <groupId>com.baomidou</groupId>
                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                <version>${eternity.mybatis.plus.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>com.baomidou</groupId>
+               <artifactId>mybatis-plus-annotation</artifactId>
+               <version>${eternity.mybatis.plus.annotation}</version>
            </dependency>
            <!--此包仅作为mybatis-plus代码生成使用-->
            <dependency>

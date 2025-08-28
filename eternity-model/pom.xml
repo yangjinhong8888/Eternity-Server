@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <!--parent指明继承关系，给出被继承项目的具体信息-->
     <parent>
-        <groupId>com.eternity</groupId>
+        <groupId>com.jinhongs</groupId>
         <artifactId>eternity-server</artifactId>
         <version>0.0.1</version>
     </parent>
@@ -29,6 +29,11 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-common</artifactId>
             <version>${eternity.springdoc.common.version}</version>
+        </dependency>
+        <!--配合mybatis-plus使用，mybatis-plus核心注解-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-annotation</artifactId>
         </dependency>
     </dependencies>
     <build>

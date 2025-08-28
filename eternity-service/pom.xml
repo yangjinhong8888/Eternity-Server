@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <!--parent指明继承关系，给出被继承项目的具体信息-->
     <parent>
-        <groupId>com.eternity</groupId>
+        <groupId>com.jinhongs</groupId>
         <artifactId>eternity-server</artifactId>
         <version>0.0.1</version>
     </parent>
@@ -23,11 +23,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.eternity</groupId>
+            <groupId>com.jinhongs</groupId>
             <artifactId>eternity-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.eternity</groupId>
+            <groupId>com.jinhongs</groupId>
             <artifactId>eternity-dao</artifactId>
         </dependency>
         <!--外部模块-->
