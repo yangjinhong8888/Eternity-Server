@@ -52,6 +52,7 @@
         <!--springdoc.common版本依赖于knife4，要保持同步-->
         <eternity.springdoc.common.version>2.3.0</eternity.springdoc.common.version>
         <eternity.mybatis.plus.generator>3.5.12</eternity.mybatis.plus.generator>
+        <!--mybatis.plus.annotation版本依赖于mybatis-p;us，要保持同步-->
         <eternity.mybatis.plus.annotation>3.5.12</eternity.mybatis.plus.annotation>
     </properties>
 
@@ -64,6 +65,8 @@
         <module>eternity-dao</module>
         <module>eternity-service</module>
         <module>eternity-web</module>
+        <!--此包仅作为mybatis-plus生成代码使用-->
+        <module>eternity-mybatis-plus-generator</module>
     </modules>
 
    <dependencyManagement>

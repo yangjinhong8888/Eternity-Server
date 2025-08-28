@@ -1,16 +1,16 @@
 server:
-  port: ${test.admin.server.port}
+  port: ${test.view.server.port}
 spring:
   security:
     user:
-      name: ${test.admin.security.user.name}                               # security默认用户名
-      password: ${test.admin.security.user.password}                       # security默认密码
+      name: ${test.view.security.user.name}                               # security默认用户名
+      password: ${test.view.security.user.password}                       # security默认密码
   # 数据库配置
   datasource:
-    username: ${test.admin.datasource.username}                            # mysql数据库账号
-    password: ${test.admin.datasource.password}                            # mysql数据库密码
+    username: ${test.view.datasource.username}                            # mysql数据库账号
+    password: ${test.view.datasource.password}                            # mysql数据库密码
 knife4j:
   basic:
     enable: false
-    username: ${test.admin.knife4j.username}                               # knife4j默认账号
-    password: ${test.admin.knife4j.password}                               # knife4j默认密码
+    username: ${test.view.knife4j.username}                               # knife4j默认账号
+    password: ${test.view.knife4j.password}                               # knife4j默认密码
