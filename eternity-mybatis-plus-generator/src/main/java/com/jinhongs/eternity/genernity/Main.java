@@ -7,11 +7,8 @@ import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.model.ClassAnnotationAttributes;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.sql.Types;
 import java.util.HashMap;
@@ -25,7 +22,6 @@ public class Main {
             props.load(Main.class.getClassLoader().getResourceAsStream("application-dev.properties"));
             return props.getProperty("dev.admin.datasource.username");
         } catch (Exception e) {
-            e.printStackTrace();
             return "root"; // 默认值
         }
     }
@@ -35,7 +31,6 @@ public class Main {
             props.load(Main.class.getClassLoader().getResourceAsStream("application-dev.properties"));
             return props.getProperty("dev.admin.datasource.password");
         } catch (Exception e) {
-            e.printStackTrace();
             return "root"; // 默认值
         }
     }
@@ -101,6 +96,7 @@ public class Main {
                                     , "article_likes", "article_favorites", "categories", "article_categories")  // 需生成的表名
                             // Entity 策略配置
                             .entityBuilder()
+                            .enableSerialAnnotation()
                             .enableFileOverride()
                             .enableLombok(new ClassAnnotationAttributes("@Data","lombok.Data")) // 启用 Lombok 注解
                             .enableTableFieldAnnotation() // 启用字段注解

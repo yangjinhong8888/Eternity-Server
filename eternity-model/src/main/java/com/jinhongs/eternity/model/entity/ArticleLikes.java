@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @Schema(name = "ArticleLikes", description = "文章点赞表")
 public class ArticleLikes implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

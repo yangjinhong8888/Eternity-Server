@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @Schema(name = "Role", description = "角色表")
 public class Role implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Schema(name = "ArticleCategories", description = "文章分类表")
 public class ArticleCategories implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
