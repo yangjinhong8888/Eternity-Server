@@ -13,6 +13,13 @@
     <name>eternity-model</name>
     <description>eternity-model</description>
     <dependencies>
+        <!--内部模块-->
+        <dependency>
+            <groupId>com.jinhongs</groupId>
+            <artifactId>eternity-common</artifactId>
+        </dependency>
+        <!--外部模块-->
+        <!--lombok，给数据生成默认Getter Setter使用，仅在编译期生效-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -22,13 +29,11 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
         </dependency>
         <!--配合knife4j使用，内容为swagger核心注解-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-common</artifactId>
-            <version>${eternity.springdoc.common.version}</version>
         </dependency>
         <!--配合mybatis-plus使用，mybatis-plus核心注解-->
         <dependency>
@@ -36,15 +41,16 @@
             <artifactId>mybatis-plus-annotation</artifactId>
         </dependency>
     </dependencies>
+
+
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <!--当使用多个注解插件的时候，需要显示指定-->
+                    <!--指定注解处理器，从 JDK 23 开始必须添加-->
                     <annotationProcessorPaths>
                         <!-- Lombok -->
                         <path>
@@ -55,7 +61,6 @@
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

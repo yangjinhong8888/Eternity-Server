@@ -28,17 +28,16 @@
     </parent>
 
     <properties>
-        <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.mapstruct.version>1.6.3</org.mapstruct.version>
+        <eternity.java.version>21</eternity.java.version>
+        <eternity.maven.compiler.source>21</eternity.maven.compiler.source>
+        <eternity.maven.compiler.target>21</eternity.maven.compiler.target>
+        <eternity.project.build.sourceEncoding>UTF-8</eternity.project.build.sourceEncoding>
         <!-- 指定 spring-beans 的版本，解决CVE-2025-41242 -->
-        <spring-beans.version>6.2.10</spring-beans.version>
+        <eternity.spring.webmvc.version>6.2.10</eternity.spring.webmvc.version>
         <!-- 指定 spring-webmvc 的版本，解决CVE-2025-41242 -->
-        <spring-webmvc.version>6.2.10</spring-webmvc.version>
+        <eternity.spring.webmvc.version>6.2.10</eternity.spring.webmvc.version>
         <!-- 指定 commons-lang 的版本，解决CVE-2025-48924 -->
-        <commons.lang.version>3.18.0</commons.lang.version>
+        <eternity.commons.lang.version>3.18.0</eternity.commons.lang.version>
         <!--子模块版本-->
         <eternity.common.version>0.0.1</eternity.common.version>
         <eternity.model.version>0.0.1</eternity.model.version>
@@ -47,13 +46,29 @@
         <eternity.web.version>0.0.1</eternity.web.version>
         <eternity.web.view.version>0.0.1</eternity.web.view.version>
         <eternity.web.admin.version>0.0.1</eternity.web.admin.version>
+        <!--mapstruct版本-->
+        <eternity.mapstruct.version>1.6.3</eternity.mapstruct.version>
+        <!--lombok版本-->
+        <eternity.lombok.version>1.18.38</eternity.lombok.version>
+        <!--maven-compiler-plugin版本-->
+        <eternity.maven.compiler.plugin.version>3.14.0</eternity.maven.compiler.plugin.version>
         <eternity.mybatis.plus.version>3.5.12</eternity.mybatis.plus.version>
+        <!--mybatis.plus.annotation版本依赖于mybatis-plus，要保持同步-->
+        <eternity.mybatis.plus.annotation.version>3.5.12</eternity.mybatis.plus.annotation.version>
+        <!--Slf4j版本-->
+        <eternity.slf4j.version>2.0.17</eternity.slf4j.version>
+        <!--logback版本-->
+        <eternity.eternity.version>1.5.18</eternity.eternity.version>
+        <!--Knife4j版本-->
         <eternity.knife4j.version>4.5.0</eternity.knife4j.version>
         <!--springdoc.common版本依赖于knife4，要保持同步-->
         <eternity.springdoc.common.version>2.3.0</eternity.springdoc.common.version>
-        <eternity.mybatis.plus.generator>3.5.12</eternity.mybatis.plus.generator>
-        <!--mybatis.plus.annotation版本依赖于mybatis-p;us，要保持同步-->
-        <eternity.mybatis.plus.annotation>3.5.12</eternity.mybatis.plus.annotation>
+        <!--mybatis-plus代码生成器-->
+        <eternity.mybatis.plus.generator.version>3.5.12</eternity.mybatis.plus.generator.version>
+        <!--mybatis-plus代码生成器freemarker模板-->
+        <eternity.freemarker.generator.version>2.3.33</eternity.freemarker.generator.version>
+        <!--mybatis-plus代码生成器velocity模板-->
+        <eternity.velocity.generator.version>2.4.1</eternity.velocity.generator.version>
     </properties>
 
     <!--父模块的打包方式-->
@@ -113,21 +128,41 @@
            <dependency>
                <groupId>org.springframework</groupId>
                <artifactId>spring-beans</artifactId>
-               <version>${spring-beans.version}</version>
+               <version>${eternity.spring.webmvc.version}</version>
            </dependency>
            <dependency>
                <groupId>org.springframework</groupId>
                <artifactId>spring-webmvc</artifactId>
-               <version>${spring-webmvc.version}</version>
+               <version>${eternity.spring.webmvc.version}</version>
            </dependency>
            <!--处理CVE-2025-48924问题-->
            <dependency>
                <groupId>org.apache.commons</groupId>
                <artifactId>commons-lang3</artifactId>
-               <version>${commons.lang.version}</version>
+               <version>${eternity.commons.lang.version}</version>
            </dependency>
 
            <!--外部模块依赖-->
+           <!--lombok依赖，版本使用springboot内置版本 出model模块外，其他都是为使用@Slf4j注解引入，仅在编译期生效-->
+           <dependency>
+               <groupId>org.projectlombok</groupId>
+               <artifactId>lombok</artifactId>
+               <version>${eternity.lombok.version}</version>
+               <optional>true</optional>
+               <scope>provided</scope>
+           </dependency>
+           <dependency>
+               <groupId>org.mapstruct</groupId>
+               <artifactId>mapstruct</artifactId>
+               <version>${eternity.mapstruct.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>org.mapstruct</groupId>
+               <artifactId>mapstruct-processor</artifactId>
+               <version>${eternity.mapstruct.version}</version>
+               <optional>true</optional>
+               <scope>provided</scope>
+           </dependency>
            <!--mybatis-plus-->
            <dependency>
                <groupId>com.baomidou</groupId>
@@ -137,18 +172,34 @@
            <dependency>
                <groupId>com.baomidou</groupId>
                <artifactId>mybatis-plus-annotation</artifactId>
-               <version>${eternity.mybatis.plus.annotation}</version>
+               <version>${eternity.mybatis.plus.annotation.version}</version>
            </dependency>
            <!--此包仅作为mybatis-plus代码生成使用-->
            <dependency>
                <groupId>com.baomidou</groupId>
                <artifactId>mybatis-plus-generator</artifactId>
-               <version>${eternity.mybatis.plus.generator}</version>
+               <version>${eternity.mybatis.plus.generator.version}</version>
+               <optional>true</optional>
+           </dependency>
+           <!-- mybatis-plus 代码生成器的freemarker模板引擎 -->
+           <dependency>
+               <groupId>org.freemarker</groupId>
+               <artifactId>freemarker</artifactId>
+               <version>${eternity.freemarker.generator.version}</version>
+               <optional>true</optional>
+           </dependency>
+           <!--mybatis-plus 代码生成器的velocity模板引擎-->
+           <dependency>
+               <groupId>org.apache.velocity</groupId>
+               <artifactId>velocity-engine-core</artifactId>
+               <version>${eternity.velocity.generator.version}</version>
+               <optional>true</optional>
            </dependency>
            <!--knife4 api文档-->
+           <!--knife4j依赖-->
            <dependency>
                <groupId>com.github.xiaoymin</groupId>
-               <artifactId>knife4j-spring-boot-starter</artifactId>
+               <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
                <version>${eternity.knife4j.version}</version>
            </dependency>
            <!--springdoc-核心注解依赖，让model能够使用swagger注解 注:版本依赖于knife4，要保持同步-->
@@ -157,7 +208,51 @@
                <artifactId>springdoc-openapi-starter-common</artifactId>
                <version>${eternity.springdoc.common.version}</version>
            </dependency>
+            <!--slf4j依赖-->
+           <dependency>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+               <version>${eternity.slf4j.version}</version>
+           </dependency>
 
+           <dependency>
+               <groupId>ch.qos.logback</groupId>
+               <artifactId>logback-classic</artifactId>
+               <version>${eternity.eternity.version}</version>
+           </dependency>
        </dependencies>
    </dependencyManagement>
+
+    <!--跟模块下配置解析器，全局解析-->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${eternity.maven.compiler.plugin.version}</version>
+                    <configuration>
+                        <source>${eternity.maven.compiler.source}</source>
+                        <target>${eternity.maven.compiler.target}</target>
+                        <encoding>${eternity.project.build.sourceEncoding}</encoding>
+                        <!--指定注解处理器，从 JDK 23 开始必须添加-->
+                        <annotationProcessorPaths>
+                            <!-- Lombok -->
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${eternity.lombok.version}</version>
+                            </path>
+                            <!-- MapStruct -->
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${eternity.mapstruct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
