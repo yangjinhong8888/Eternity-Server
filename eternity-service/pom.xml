@@ -22,6 +22,14 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.eternity</groupId>
+            <artifactId>eternity-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.eternity</groupId>
+            <artifactId>eternity-dao</artifactId>
+        </dependency>
         <!--外部模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

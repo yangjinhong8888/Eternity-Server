@@ -20,4 +20,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.eternity</groupId>
+            <artifactId>eternity-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.eternity</groupId>
+            <artifactId>eternity-model</artifactId>
+        </dependency>
+        <!--引入mybatis-plus-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

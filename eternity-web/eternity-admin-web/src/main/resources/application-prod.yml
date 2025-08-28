@@ -1,0 +1,16 @@
+server:
+  port: ${prod.admin.server.port}
+spring:
+  security:
+    user:
+      name: ${prod.admin.security.user.name}                               # security默认用户名
+      password: ${prod.admin.security.user.password}                       # security默认密码
+  # 数据库配置
+  datasource:
+    username: ${prod.admin.datasource.username}                            # mysql数据库账号
+    password: ${prod.admin.datasource.password}                            # mysql数据库密码
+knife4j:
+  basic:
+    enable: false
+    username: ${prod.admin.knife4j.username}                               # knife4j默认账号
+    password: ${prod.admin.knife4j.password}                               # knife4j默认密码

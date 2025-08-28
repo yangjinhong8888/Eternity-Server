@@ -36,3 +36,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+
+### 配置文件 ###
+application.properties
+application-*.properties
+!application-template.properties

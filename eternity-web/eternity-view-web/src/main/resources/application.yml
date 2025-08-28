@@ -4,3 +4,32 @@ spring:
 
   profiles:
     active: dev
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver                                        # 数据库连接驱动
+    url: jdbc:mysql://localhost:3306?allowPublicKeyRetrieval=true                      # 数据库连接串
+
+# springdoc-openapi项目配置
+springdoc:
+  # Swagger UI 配置
+  swagger-ui:
+    path: /swagger-ui.html                                                              # Swagger UI 访问路径
+    tags-sorter: alpha                                                                  # API 分组排序 (alpha: 字母顺序)
+    operations-sorter: alpha                                                            # API 接口排序 (alpha: 字母顺序)
+  # API Docs 配置
+  api-docs:
+    path: /v3/api-docs                                                                  # API 文档访问路径
+    enabled: true                                                                       # 是否启用 API 文档
+  # 分组配置
+  group-configs:
+    - group: '博客页面'                                                                   # 分组名称
+      paths-to-match: '/**'                                                             # 匹配的路径模式
+      packages-to-scan: com.eternity.eternityviewweb                                    # 扫描的包路径
+
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+    enable-swagger-models: true
+    enable-document-manage: true
+    swagger-model-name: 实体类列表

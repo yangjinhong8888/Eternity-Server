@@ -24,6 +24,12 @@
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
+        <!--配合knife4j使用，内容为swagger核心注解-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-common</artifactId>
+            <version>${eternity.springdoc.common.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

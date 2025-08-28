@@ -18,13 +18,17 @@
         <!--内部模块-->
         <dependency>
             <groupId>com.eternity</groupId>
+            <artifactId>eternity-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.eternity</groupId>
             <artifactId>eternity-service</artifactId>
         </dependency>
         <!--外部模块-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -39,6 +43,13 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!--knife4j依赖-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <version>${eternity.knife4j.version}</version>
         </dependency>
     </dependencies>
 

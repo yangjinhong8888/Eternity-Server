@@ -37,6 +37,8 @@
         <spring-beans.version>6.2.10</spring-beans.version>
         <!-- 指定 spring-webmvc 的版本，解决CVE-2025-41242 -->
         <spring-webmvc.version>6.2.10</spring-webmvc.version>
+        <!-- 指定 commons-lang 的版本，解决CVE-2025-48924 -->
+        <commons.lang.version>3.18.0</commons.lang.version>
         <!--子模块版本-->
         <eternity.common.version>0.0.1</eternity.common.version>
         <eternity.model.version>0.0.1</eternity.model.version>
@@ -45,6 +47,11 @@
         <eternity.web.version>0.0.1</eternity.web.version>
         <eternity.web.view.version>0.0.1</eternity.web.view.version>
         <eternity.web.admin.version>0.0.1</eternity.web.admin.version>
+        <eternity.mybatis.plus.version>3.5.12</eternity.mybatis.plus.version>
+        <eternity.knife4j.version>4.5.0</eternity.knife4j.version>
+        <!--springdoc.common版本依赖于knife4，要保持同步-->
+        <eternity.springdoc.common.version>2.3.0</eternity.springdoc.common.version>
+        <eternity.mybatis.plus.generator>3.5.12</eternity.mybatis.plus.generator>
     </properties>
 
     <!--父模块的打包方式-->
@@ -109,7 +116,38 @@
                <artifactId>spring-webmvc</artifactId>
                <version>${spring-webmvc.version}</version>
            </dependency>
+           <!--处理CVE-2025-48924问题-->
+           <dependency>
+               <groupId>org.apache.commons</groupId>
+               <artifactId>commons-lang3</artifactId>
+               <version>${commons.lang.version}</version>
+           </dependency>
 
+           <!--外部模块依赖-->
+           <!--mybatis-plus-->
+           <dependency>
+               <groupId>com.baomidou</groupId>
+               <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+               <version>${eternity.mybatis.plus.version}</version>
+           </dependency>
+           <!--此包仅作为mybatis-plus代码生成使用-->
+           <dependency>
+               <groupId>com.baomidou</groupId>
+               <artifactId>mybatis-plus-generator</artifactId>
+               <version>${eternity.mybatis.plus.generator}</version>
+           </dependency>
+           <!--knife4 api文档-->
+           <dependency>
+               <groupId>com.github.xiaoymin</groupId>
+               <artifactId>knife4j-spring-boot-starter</artifactId>
+               <version>${eternity.knife4j.version}</version>
+           </dependency>
+           <!--springdoc-核心注解依赖，让model能够使用swagger注解 注:版本依赖于knife4，要保持同步-->
+           <dependency>
+               <groupId>org.springdoc</groupId>
+               <artifactId>springdoc-openapi-starter-common</artifactId>
+               <version>${eternity.springdoc.common.version}</version>
+           </dependency>
 
        </dependencies>
    </dependencyManagement>
