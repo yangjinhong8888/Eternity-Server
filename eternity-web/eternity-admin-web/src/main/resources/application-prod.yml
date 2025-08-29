@@ -7,8 +7,16 @@ spring:
       password: ${prod.admin.security.user.password}                       # security默认密码
   # 数据库配置
   datasource:
-    username: ${prod.admin.datasource.username}                            # mysql数据库账号
-    password: ${prod.admin.datasource.password}                            # mysql数据库密码
+    driver-class-name: com.mysql.cj.jdbc.Driver                           # mysql数据库连接驱动
+    url: ${dev.admin.datasource.url}                                      # mysql数据链接
+    username: ${dev.admin.datasource.username}                            # mysql数据库账号
+    password: ${dev.admin.datasource.password}                            # mysql数据库密码
+  data:
+    redis:
+      host: ${dev.admin.redis.host}                                       #redis 链接
+      port: ${dev.admin.redis.port}                                       #redis 端口
+      password: ${dev.admin.redis.password}                               #redis 密码
+      database: 0                                                         #redis 数据库
 knife4j:
   basic:
     enable: false

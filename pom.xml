@@ -28,16 +28,46 @@
     </parent>
 
     <properties>
+        <!--依赖Springboot版本，所属版本都和springboot-parent内依赖一致，这里只做显示声明-->
         <eternity.java.version>21</eternity.java.version>
         <eternity.maven.compiler.source>21</eternity.maven.compiler.source>
         <eternity.maven.compiler.target>21</eternity.maven.compiler.target>
         <eternity.project.build.sourceEncoding>UTF-8</eternity.project.build.sourceEncoding>
+        <!--spring-starter-web版本-->
+        <eternity.starter.web.version>3.5.4</eternity.starter.web.version>
+        <!--spring-security-test版本-->
+        <eternity.starter.test.version>3.5.4</eternity.starter.test.version>
+        <!--spring-security-test版本-->
+        <eternity.security.test.version>6.5.2</eternity.security.test.version>
+        <!--spring-starter-redis-->
+        <eternity.starter.redis.version>3.5.4</eternity.starter.redis.version>
+        <!--spring-jackson-databind版本-->
+        <eternity.jackson.databind.version>2.19.0</eternity.jackson.databind.version>
+        <!--spring-mysql-driver-->
+        <eternity.mysql.connector.version>9.3.0</eternity.mysql.connector.version>
+        <!--maven-compiler-plugin版本-->
+        <eternity.maven.compiler.plugin.version>3.14.0</eternity.maven.compiler.plugin.version>
+        <!--lombok版本-->
+        <eternity.lombok.version>1.18.38</eternity.lombok.version>
+        <!--Slf4j版本-->
+        <eternity.slf4j.version>2.0.17</eternity.slf4j.version>
+        <!--logback版本-->
+        <eternity.eternity.logback.version>1.5.18</eternity.eternity.logback.version>
+
+
+
+
+        <!--解决Springboot版本内存在问题的依赖-->
         <!-- 指定 spring-beans 的版本，解决CVE-2025-41242 -->
         <eternity.spring.webmvc.version>6.2.10</eternity.spring.webmvc.version>
         <!-- 指定 spring-webmvc 的版本，解决CVE-2025-41242 -->
         <eternity.spring.webmvc.version>6.2.10</eternity.spring.webmvc.version>
         <!-- 指定 commons-lang 的版本，解决CVE-2025-48924 -->
         <eternity.commons.lang.version>3.18.0</eternity.commons.lang.version>
+
+
+
+
         <!--子模块版本-->
         <eternity.common.version>0.0.1</eternity.common.version>
         <eternity.model.version>0.0.1</eternity.model.version>
@@ -46,19 +76,14 @@
         <eternity.web.version>0.0.1</eternity.web.version>
         <eternity.web.view.version>0.0.1</eternity.web.view.version>
         <eternity.web.admin.version>0.0.1</eternity.web.admin.version>
+
+
+        <!--其他外部依赖版本-->
         <!--mapstruct版本-->
         <eternity.mapstruct.version>1.6.3</eternity.mapstruct.version>
-        <!--lombok版本-->
-        <eternity.lombok.version>1.18.38</eternity.lombok.version>
-        <!--maven-compiler-plugin版本-->
-        <eternity.maven.compiler.plugin.version>3.14.0</eternity.maven.compiler.plugin.version>
         <eternity.mybatis.plus.version>3.5.12</eternity.mybatis.plus.version>
         <!--mybatis.plus.annotation版本依赖于mybatis-plus，要保持同步-->
         <eternity.mybatis.plus.annotation.version>3.5.12</eternity.mybatis.plus.annotation.version>
-        <!--Slf4j版本-->
-        <eternity.slf4j.version>2.0.17</eternity.slf4j.version>
-        <!--logback版本-->
-        <eternity.eternity.version>1.5.18</eternity.eternity.version>
         <!--Knife4j版本-->
         <eternity.knife4j.version>4.5.0</eternity.knife4j.version>
         <!--springdoc.common版本依赖于knife4，要保持同步-->
@@ -142,8 +167,45 @@
                <version>${eternity.commons.lang.version}</version>
            </dependency>
 
+
            <!--外部模块依赖-->
-           <!--lombok依赖，版本使用springboot内置版本 出model模块外，其他都是为使用@Slf4j注解引入，仅在编译期生效-->
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-web</artifactId>
+               <version>${eternity.starter.web.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-test</artifactId>
+               <version>${eternity.starter.test.version}</version>
+               <scope>test</scope>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.security</groupId>
+               <artifactId>spring-security-test</artifactId>
+               <version>${eternity.security.test.version}</version>
+               <scope>test</scope>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-data-redis</artifactId>
+               <version>${eternity.starter.redis.version}</version>
+           </dependency>
+           <!--Redis序列化方式-->
+           <dependency>
+               <groupId>com.fasterxml.jackson.core</groupId>
+               <artifactId>jackson-databind</artifactId>
+               <version>${eternity.jackson.databind.version}</version>
+               <optional>true</optional>
+           </dependency>
+           <!--Mysql驱动-->
+           <dependency>
+               <groupId>com.mysql</groupId>
+               <artifactId>mysql-connector-j</artifactId>
+               <version>${eternity.mysql.connector.version}</version>
+               <scope>runtime</scope>
+           </dependency>
+           <!--lombok依赖，除model模块外，其他都是为使用@Slf4j注解引入，仅在编译期生效-->
            <dependency>
                <groupId>org.projectlombok</groupId>
                <artifactId>lombok</artifactId>
@@ -151,6 +213,21 @@
                <optional>true</optional>
                <scope>provided</scope>
            </dependency>
+           <!--slf4j依赖-->
+           <dependency>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-api</artifactId>
+               <version>${eternity.slf4j.version}</version>
+           </dependency>
+
+           <dependency>
+               <groupId>ch.qos.logback</groupId>
+               <artifactId>logback-classic</artifactId>
+               <version>${eternity.eternity.logback.version}</version>
+           </dependency>
+
+
+           <!--mapstruct-->
            <dependency>
                <groupId>org.mapstruct</groupId>
                <artifactId>mapstruct</artifactId>
@@ -207,18 +284,6 @@
                <groupId>org.springdoc</groupId>
                <artifactId>springdoc-openapi-starter-common</artifactId>
                <version>${eternity.springdoc.common.version}</version>
-           </dependency>
-            <!--slf4j依赖-->
-           <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-api</artifactId>
-               <version>${eternity.slf4j.version}</version>
-           </dependency>
-
-           <dependency>
-               <groupId>ch.qos.logback</groupId>
-               <artifactId>logback-classic</artifactId>
-               <version>${eternity.eternity.version}</version>
            </dependency>
        </dependencies>
    </dependencyManagement>

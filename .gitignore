@@ -46,3 +46,4 @@ application-*.properties
 
 ### 日志 ###
 /logs/
+**/logs/*.log

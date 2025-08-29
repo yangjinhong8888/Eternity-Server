@@ -36,16 +36,6 @@
             <artifactId>eternity-dao</artifactId>
         </dependency>
         <!--外部模块-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
 
         <!--Slf4j注解使用，仅在编译期生效-->
         <dependency>
