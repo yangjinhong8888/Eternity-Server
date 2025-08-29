@@ -58,4 +58,11 @@ public class Categories implements Serializable {
     @Schema(description = "创建时间戳（毫秒）")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Long createTime;
+
+    /**
+     * 更新时间戳（毫秒）
+     */
+    @Schema(description = "更新时间戳（毫秒）")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private Long updateTime;
 }

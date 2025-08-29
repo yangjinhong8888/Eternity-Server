@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name="登录接口")
 public class LoginController {
 
-    private UserService userService;
+    private final UserService userService;
     @Autowired
     public LoginController(UserService userService){
         this.userService = userService;
@@ -23,6 +23,7 @@ public class LoginController {
     @Operation(summary = "普通login请求")
     @GetMapping("/login")
     public String login() {
+        userService.testRedis();
         return userService.getUserName();
     }
 }

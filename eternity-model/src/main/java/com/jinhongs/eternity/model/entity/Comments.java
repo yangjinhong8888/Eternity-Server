@@ -67,6 +67,13 @@ public class Comments implements Serializable {
     private Integer likesCount;
 
     /**
+     * 评论状态 10-正常 20-删除
+     */
+    @TableField("status")
+    @Schema(description = "评论状态 10-正常 20-删除")
+    private Byte status;
+
+    /**
      * 创建时间戳（毫秒）
      */
     @Schema(description = "创建时间戳（毫秒）")
@@ -74,9 +81,9 @@ public class Comments implements Serializable {
     private Long createTime;
 
     /**
-     * 评论状态 10-正常 20-删除
+     * 更新时间戳（毫秒）
      */
-    @TableField("status")
-    @Schema(description = "评论状态 10-正常 20-删除")
-    private Byte status;
+    @Schema(description = "更新时间戳（毫秒）")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private Long updateTime;
 }
