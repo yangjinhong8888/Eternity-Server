@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class JsonAccessDeniedHandler implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setStatus(403);
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(

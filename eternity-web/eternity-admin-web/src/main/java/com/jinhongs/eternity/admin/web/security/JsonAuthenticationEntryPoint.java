@@ -15,7 +15,7 @@ import java.io.IOException;
 @Slf4j
 public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setStatus(401);
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(

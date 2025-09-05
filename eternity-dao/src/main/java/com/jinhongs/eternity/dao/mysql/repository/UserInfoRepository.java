@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jinhongs.eternity.dao.mysql.mapper.PermissionMapper;
 import com.jinhongs.eternity.dao.mysql.mapper.RolePermissionMapper;
 import com.jinhongs.eternity.dao.mysql.mapper.UserRoleMapper;
-import com.jinhongs.eternity.dao.redis.client.RedisClient;
 import com.jinhongs.eternity.model.entity.Permission;
 import com.jinhongs.eternity.model.entity.RolePermission;
 import com.jinhongs.eternity.model.entity.UserInfo;
