@@ -1,5 +1,7 @@
 server:
   port: 8080
+  servlet:
+    context-path: /
 spring:
   application:
     name: eternity-admin-web
@@ -21,15 +23,9 @@ springdoc:
   group-configs:
     - group: '管理后台'                        # 分组名称
       paths-to-match: '/**'                   # 匹配的路径模式
-      packages-to-scan: com.jinhongs.eternity.admin.web   # 扫描的包路径
+      packages-to-scan:
+      - com.jinhongs.eternity.admin.web   # 扫描的包路径
 
-knife4j:
-  enable: true
-  setting:
-    language: zh-CN
-    enable-swagger-models: true
-    enable-document-manage: true
-    swagger-model-name: 实体类列表
 
 # 日志配置
 logging:

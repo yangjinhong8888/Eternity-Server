@@ -45,5 +45,5 @@ application-*.properties
 !application-template.properties
 
 ### 日志 ###
-/logs/
-**/logs/*.log
+/logs/**
+**/logs/**

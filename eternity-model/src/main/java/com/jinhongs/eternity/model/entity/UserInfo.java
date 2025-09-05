@@ -32,18 +32,11 @@ public class UserInfo implements Serializable {
     private Long id;
 
     /**
-     * 全局唯一用户名
-     */
-    @TableField("usercode")
-    @Schema(description = "全局唯一用户名")
-    private String usercode;
-
-    /**
      * 昵称
      */
-    @TableField("nickname")
+    @TableField("username")
     @Schema(description = "昵称")
-    private String nickname;
+    private String username;
 
     /**
      * 头像URL

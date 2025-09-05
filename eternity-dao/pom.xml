@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!--版本由父模块统一管理-->
     <dependencies>
         <!--内部模块-->
         <dependency>

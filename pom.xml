@@ -35,10 +35,14 @@
         <eternity.project.build.sourceEncoding>UTF-8</eternity.project.build.sourceEncoding>
         <!--spring-starter-web版本-->
         <eternity.starter.web.version>3.5.4</eternity.starter.web.version>
-        <!--spring-security-test版本-->
+        <!--spring-context版本-->
+        <eternity.starter.version>3.5.4</eternity.starter.version>
+        <!--spring-starter-security版本-->
+        <eternity.starter.security.version>3.5.4</eternity.starter.security.version>
+        <!--spring-starter-security-core版本-->
+        <eternity.security.core.version>6.5.2</eternity.security.core.version>
+        <!--spring-starter-test版本-->
         <eternity.starter.test.version>3.5.4</eternity.starter.test.version>
-        <!--spring-security-test版本-->
-        <eternity.security.test.version>6.5.2</eternity.security.test.version>
         <!--spring-starter-redis-->
         <eternity.starter.redis.version>3.5.4</eternity.starter.redis.version>
         <!--spring-jackson-databind版本-->
@@ -82,12 +86,8 @@
         <!--mapstruct版本-->
         <eternity.mapstruct.version>1.6.3</eternity.mapstruct.version>
         <eternity.mybatis.plus.version>3.5.12</eternity.mybatis.plus.version>
-        <!--mybatis.plus.annotation版本依赖于mybatis-plus，要保持同步-->
-        <eternity.mybatis.plus.annotation.version>3.5.12</eternity.mybatis.plus.annotation.version>
-        <!--Knife4j版本-->
-        <eternity.knife4j.version>4.5.0</eternity.knife4j.version>
-        <!--springdoc.common版本依赖于knife4，要保持同步-->
-        <eternity.springdoc.common.version>2.3.0</eternity.springdoc.common.version>
+        <!--springdoc版本-->
+        <eternity.springdoc.version>2.8.12</eternity.springdoc.version>
         <!--mybatis-plus代码生成器-->
         <eternity.mybatis.plus.generator.version>3.5.12</eternity.mybatis.plus.generator.version>
         <!--mybatis-plus代码生成器freemarker模板-->
@@ -109,6 +109,13 @@
         <module>eternity-mybatis-plus-generator</module>
     </modules>
 
+    <!--
+    模块管理规范：
+        使用父模块的dependencyManagement统一管理依赖版本。
+        子模块按需声明依赖，省略版本号。
+        排除不必要重复依赖声明，依赖已有模块的传递性（当多个模块均直接使用该依赖时，必须每个模块均需声明）。
+        合理配置作用域以减少依赖传递。
+    -->
    <dependencyManagement>
        <dependencies>
            <!--模块依赖-->
@@ -174,6 +181,23 @@
                <artifactId>spring-boot-starter-web</artifactId>
                <version>${eternity.starter.web.version}</version>
            </dependency>
+           <!--springboot核心依赖，包括@Service @Component注解等-->
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter</artifactId>
+               <version>${eternity.starter.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-security</artifactId>
+               <version>${eternity.starter.security.version}</version>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.security</groupId>
+               <artifactId>spring-security-core</artifactId>
+               <version>${eternity.security.core.version}</version>
+               <scope>compile</scope>
+           </dependency>
            <dependency>
                <groupId>org.springframework.boot</groupId>
                <artifactId>spring-boot-starter-test</artifactId>
@@ -181,17 +205,11 @@
                <scope>test</scope>
            </dependency>
            <dependency>
-               <groupId>org.springframework.security</groupId>
-               <artifactId>spring-security-test</artifactId>
-               <version>${eternity.security.test.version}</version>
-               <scope>test</scope>
-           </dependency>
-           <dependency>
                <groupId>org.springframework.boot</groupId>
                <artifactId>spring-boot-starter-data-redis</artifactId>
                <version>${eternity.starter.redis.version}</version>
            </dependency>
-           <!--Redis序列化方式-->
+           <!--Redis序列化方式 dao模块引入，为Redis客户端配置序列化-->
            <dependency>
                <groupId>com.fasterxml.jackson.core</groupId>
                <artifactId>jackson-databind</artifactId>
@@ -213,13 +231,13 @@
                <optional>true</optional>
                <scope>provided</scope>
            </dependency>
-           <!--slf4j依赖-->
+           <!--slf4j依赖 在公共模块引入所有模块皆可使用-->
            <dependency>
                <groupId>org.slf4j</groupId>
                <artifactId>slf4j-api</artifactId>
                <version>${eternity.slf4j.version}</version>
            </dependency>
-
+           <!--日志具体实现依赖  只需要在web模块引入slf4j会自动查询依赖树并绑定唯一具体实现-->
            <dependency>
                <groupId>ch.qos.logback</groupId>
                <artifactId>logback-classic</artifactId>
@@ -227,7 +245,7 @@
            </dependency>
 
 
-           <!--mapstruct-->
+           <!--mapstruct 在web模块和service模块引入使用，进行Object转换-->
            <dependency>
                <groupId>org.mapstruct</groupId>
                <artifactId>mapstruct</artifactId>
@@ -240,7 +258,7 @@
                <optional>true</optional>
                <scope>provided</scope>
            </dependency>
-           <!--mybatis-plus-->
+           <!--mybatis-plus 在dao模块引入，为访问mysql提供支持-->
            <dependency>
                <groupId>com.baomidou</groupId>
                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
@@ -248,8 +266,9 @@
            </dependency>
            <dependency>
                <groupId>com.baomidou</groupId>
-               <artifactId>mybatis-plus-annotation</artifactId>
-               <version>${eternity.mybatis.plus.annotation.version}</version>
+               <artifactId>mybatis-plus</artifactId>
+               <version>${eternity.mybatis.plus.version}</version>
+               <scope>compile</scope>
            </dependency>
            <!--此包仅作为mybatis-plus代码生成使用-->
            <dependency>
@@ -272,18 +291,18 @@
                <version>${eternity.velocity.generator.version}</version>
                <optional>true</optional>
            </dependency>
-           <!--knife4 api文档-->
-           <!--knife4j依赖-->
+           <!--api文档-->
+           <!--在web模块引入实现路由文档 配合api fox实现在线文档-->
            <dependency>
-               <groupId>com.github.xiaoymin</groupId>
-               <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-               <version>${eternity.knife4j.version}</version>
+               <groupId>org.springdoc</groupId>
+               <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+               <version>${eternity.springdoc.version}</version>
            </dependency>
-           <!--springdoc-核心注解依赖，让model能够使用swagger注解 注:版本依赖于knife4，要保持同步-->
+           <!--springdoc-核心注解依赖，在model模块引入，model能够使用swagger注解，注解解析在web模块完成 注:版本依赖于springdoc，要保持同步-->
            <dependency>
                <groupId>org.springdoc</groupId>
                <artifactId>springdoc-openapi-starter-common</artifactId>
-               <version>${eternity.springdoc.common.version}</version>
+               <version>${eternity.springdoc.version}</version>
            </dependency>
        </dependencies>
    </dependencyManagement>

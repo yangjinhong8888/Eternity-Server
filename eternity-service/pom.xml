@@ -21,6 +21,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
+    <!--版本由父模块统一管理-->
     <dependencies>
         <!--内部模块-->
         <dependency>
@@ -29,13 +31,26 @@
         </dependency>
         <dependency>
             <groupId>com.jinhongs</groupId>
-            <artifactId>eternity-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jinhongs</groupId>
             <artifactId>eternity-dao</artifactId>
         </dependency>
         <!--外部模块-->
+
+        <!--springboot核心基础依赖，包括@Service @Component注解等，可以在运行时把bean注入到springboot,service引入是为了和dao层解耦，避免过渡依赖dao层-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <!--spring-security核心基础依赖，为了service模块使用security提供的功能引入-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+        <!--对象转换模块-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
 
         <!--Slf4j注解使用，仅在编译期生效-->
         <dependency>
@@ -59,6 +74,12 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                        </path>
+
+                        <!-- MapStruct -->
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

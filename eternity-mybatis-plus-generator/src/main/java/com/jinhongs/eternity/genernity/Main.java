@@ -121,7 +121,7 @@ public class Main {
                         .serviceBuilder()                           // 解耦 IService 模块，不再推荐使用（避免业务层混淆乱用），迁移至 CrudRepository 类
                         .superServiceImplClass(CrudRepository.class)
                         .formatServiceImplFileName("%sRepository")
-                        .enableFileOverride()
+                        // .enableFileOverride()                           不覆盖已存在文件
                         .serviceTemplate("/templates/service.java")
                         .disableService()                           // 不在单独使用生成Service 迁移至 CrudRepository
                         .build()

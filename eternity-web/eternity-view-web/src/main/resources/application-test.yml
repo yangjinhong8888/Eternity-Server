@@ -17,8 +17,3 @@ spring:
       port: ${dev.view.redis.port}                                        #redis 端口
       password: ${dev.view.redis.password}                                #redis 密码
       database: 0                                                         #redis 数据库
-knife4j:
-  basic:
-    enable: false
-    username: ${test.view.knife4j.username}                               # knife4j默认账号
-    password: ${test.view.knife4j.password}                               # knife4j默认密码

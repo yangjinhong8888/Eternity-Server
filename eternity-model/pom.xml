@@ -12,6 +12,9 @@
     <version>0.0.1</version>
     <name>eternity-model</name>
     <description>eternity-model</description>
+
+
+    <!--版本由父模块统一管理-->
     <dependencies>
         <!--内部模块-->
         <dependency>
@@ -26,10 +29,6 @@
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
         <!--配合knife4j使用，内容为swagger核心注解-->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -38,7 +37,7 @@
         <!--配合mybatis-plus使用，mybatis-plus核心注解-->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-annotation</artifactId>
+            <artifactId>mybatis-plus</artifactId>
         </dependency>
     </dependencies>
 
@@ -56,11 +55,6 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                        </path>
-                        <!-- MapStruct -->
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

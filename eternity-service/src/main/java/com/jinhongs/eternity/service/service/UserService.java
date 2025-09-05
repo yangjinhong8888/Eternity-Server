@@ -1,30 +1,14 @@
 package com.jinhongs.eternity.service.service;
 
-import com.jinhongs.eternity.dao.redis.client.RedisClient;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.jinhongs.eternity.service.model.dto.UserInfoDTO;
+import com.jinhongs.eternity.service.model.dto.UserLoginDTO;
+import com.jinhongs.eternity.service.model.dto.UserRegisterDTO;
 
-@Slf4j
-@Service
-public class UserService {
+public interface UserService {
 
-    public RedisClient redisClient;
+    UserInfoDTO register(UserRegisterDTO userRegisterDTO);
 
-    @Autowired
-    public UserService(RedisClient redisClient) {
-        this.redisClient = redisClient;
-    }
+    String login(UserLoginDTO userLoginDTO);
 
-    public String getUserName() {
-        log.info("JinHongs 访问");
-        System.out.println(LoggerFactory.getILoggerFactory().getClass().getName());
-        return "JinHongs";
-    }
-
-    public void testRedis() {
-        redisClient.setStringValue("test", "test");
-        redisClient.setStringValue("test:1001:1001", "test");
-    }
+    UserInfoDTO getUserInfo(String userId);
 }
