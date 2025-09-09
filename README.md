@@ -1,6 +1,6 @@
-<div style="text-align: center;"><h3>LOGO</h3></div>
+<h1 align="center">LOGO</h1>
 
-<div style="text-align: center;"><h3>Eternity</h3></div>
+<h1 align="center">Eternity</h1>
 
 项目预览：
 

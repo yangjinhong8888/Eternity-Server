@@ -1,4 +1,4 @@
-# Eternity 前端接口
+# Eternity 管理后台接口
 
 ## 项目结构
 ```
