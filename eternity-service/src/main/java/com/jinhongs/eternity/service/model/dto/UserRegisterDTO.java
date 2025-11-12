@@ -9,7 +9,25 @@ public class UserRegisterDTO {
      * 全局唯一用户名
      */
     @Schema(description = "用户id")
-    private String userId;
+    private long userId;
+
+    /**
+     * 认证类型（username/phone/email/wechat）
+     */
+    @Schema(description = "认证类型（username/phone/email/wechat）")
+    private String identityType;
+
+    /**
+     * 登录唯一标识
+     */
+    @Schema(description = "登录唯一标识")
+    private String identifier;
+
+    /**
+     * 密码
+     */
+    @Schema(description = "凭证")
+    private String credential;
 
     /**
      * 昵称
@@ -22,10 +40,4 @@ public class UserRegisterDTO {
      */
     @Schema(description = "头像URL")
     private String avatar;
-
-    /**
-     * 密码
-     */
-    @Schema(description = "密码")
-    private String password;
 }

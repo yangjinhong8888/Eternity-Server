@@ -37,3 +37,7 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
   file:
     name: ./logs/eternity-view.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30

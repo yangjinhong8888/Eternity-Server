@@ -1,15 +1,11 @@
 package com.jinhongs.eternity.dao.mysql.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jinhongs.eternity.dao.mysql.mapper.PermissionMapper;
-import com.jinhongs.eternity.dao.mysql.mapper.RolePermissionMapper;
-import com.jinhongs.eternity.dao.mysql.mapper.UserRoleMapper;
-import com.jinhongs.eternity.model.entity.Permission;
-import com.jinhongs.eternity.model.entity.RolePermission;
-import com.jinhongs.eternity.model.entity.UserInfo;
-import com.jinhongs.eternity.dao.mysql.mapper.UserInfoMapper;
+import com.jinhongs.eternity.common.exception.GeneralException;
+import com.jinhongs.eternity.dao.mysql.mapper.*;
+import com.jinhongs.eternity.dao.mysql.model.dto.UserEntity;
+import com.jinhongs.eternity.model.entity.*;
 import com.baomidou.mybatisplus.extension.repository.CrudRepository;
-import com.jinhongs.eternity.model.entity.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,49 +20,76 @@ import java.util.List;
 @Component
 public class UserInfoRepository extends CrudRepository<UserInfoMapper, UserInfo> {
 
+    private final UserInfoMapper userInfoMapper;
+
     private final UserRoleMapper userRoleMapper;
 
     private final RolePermissionMapper rolePermissionMapper;
 
     private final PermissionMapper permissionMapper;
 
+    private final UserAuthMapper userAuthMapper;
+
     @Autowired
-    public UserInfoRepository(UserRoleMapper userRoleMapper, RolePermissionMapper rolePermissionMapper, PermissionMapper permissionMapper) {
+    public UserInfoRepository(UserInfoMapper userInfoMapper, UserRoleMapper userRoleMapper, RolePermissionMapper rolePermissionMapper, PermissionMapper permissionMapper, UserAuthMapper userAuthMapper) {
+        this.userInfoMapper = userInfoMapper;
         this.userRoleMapper = userRoleMapper;
         this.rolePermissionMapper = rolePermissionMapper;
         this.permissionMapper = permissionMapper;
+        this.userAuthMapper = userAuthMapper;
     }
 
-    public List<String> findUserPermKeyBuId(Long userId) {
+    public UserEntity findUserIdByUserName(String username) {
+        UserAuth userAuth = this.userAuthMapper.selectOne(
+                new LambdaQueryWrapper<UserAuth>().eq(UserAuth::getIdentifier, username)
+        );
+        UserInfo userInfo;
+        if (userAuth != null) {
+            userInfo = userInfoMapper.selectOne(
+                    new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getId, userAuth.getUserId())
+            );
+        } else {
+            throw new GeneralException("用户不存在");
+        }
+
         // 获取用户权限
         // 根据用户ID获取角色ID列表
         List<Long> roleIds = userRoleMapper.selectList(
-                new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userId)
-            ).stream()
-            .map(UserRole::getRoleId)
-            .toList();
+                        new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userAuth.getUserId())
+                ).stream()
+                .map(UserRole::getRoleId)
+                .toList();
 
         // 根据角色ID列表获取权限ID列表
         List<Long> permissionIds = new ArrayList<>();
         if (!roleIds.isEmpty()) {
             permissionIds = rolePermissionMapper.selectList(
-                    new LambdaQueryWrapper<RolePermission>().in(RolePermission::getRoleId, roleIds)
-                ).stream()
-                .map(RolePermission::getPermissionId)
-                .toList();
+                            new LambdaQueryWrapper<RolePermission>().in(RolePermission::getRoleId, roleIds)
+                    ).stream()
+                    .map(RolePermission::getPermissionId)
+                    .toList();
         }
 
         // 根据权限ID列表获取权限permKey
         List<String> permKeys = new ArrayList<>();
         if (!permissionIds.isEmpty()) {
             permKeys = permissionMapper.selectList(
-                    new LambdaQueryWrapper<Permission>().in(Permission::getId, permissionIds)
-                ).stream()
-                .map(Permission::getPermKey)
-                .toList();
+                            new LambdaQueryWrapper<Permission>().in(Permission::getId, permissionIds)
+                    ).stream()
+                    .map(Permission::getPermKey)
+                    .toList();
         }
 
-        return permKeys;
+        return new UserEntity(
+                userInfo.getId(),
+                userAuth.getIdentifier(),
+                userAuth.getCredential(),
+                permKeys
+        );
+    }
+
+    public boolean isExistUsername(String username) {
+        return userInfoMapper.selectOne(new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getUsername, username)) != null;
     }
 
 }

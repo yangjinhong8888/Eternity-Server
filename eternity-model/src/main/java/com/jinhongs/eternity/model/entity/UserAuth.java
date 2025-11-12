@@ -39,17 +39,17 @@ public class UserAuth implements Serializable {
     private Long userId;
 
     /**
-     * 认证类型（phone/email/wechat）
+     * 认证类型（username/phone/email/wechat）
      */
     @TableField("identity_type")
-    @Schema(description = "认证类型（phone/email/wechat）")
+    @Schema(description = "认证类型（username/phone/email/wechat）")
     private String identityType;
 
     /**
-     * 唯一标识（手机号/OpenID等）
+     * 唯一标识（用户名/手机号/邮箱/微信openID）
      */
     @TableField("identifier")
-    @Schema(description = "唯一标识（手机号/OpenID等）")
+    @Schema(description = "唯一标识（用户名/手机号/邮箱/微信openID）")
     private String identifier;
 
     /**
@@ -57,7 +57,7 @@ public class UserAuth implements Serializable {
      */
     @TableField("credential")
     @Schema(description = "密码或令牌")
-    private byte[] credential;
+    private String credential;
 
     /**
      * 创建时间戳（毫秒）

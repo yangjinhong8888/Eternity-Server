@@ -24,7 +24,7 @@ springdoc:
     - group: '管理后台'                        # 分组名称
       paths-to-match: '/**'                   # 匹配的路径模式
       packages-to-scan:
-      - com.jinhongs.eternity.admin.web   # 扫描的包路径
+        - com.jinhongs.eternity.admin.web   # 扫描的包路径
 
 
 # 日志配置
@@ -37,3 +37,7 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
   file:
     name: ./logs/eternity-admin.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30

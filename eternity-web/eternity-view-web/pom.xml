@@ -84,7 +84,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <!--指定注解处理器，从 JDK 23 开始必须添加，除了model模块，其余都是为了解析@Slf4j注解使用，只在编译期有效-->
+                    <!--指定注解处理器，从 JDK 23 开始必须添加，只在编译期有效-->
                     <annotationProcessorPaths>
                         <!-- Lombok -->
                         <path>

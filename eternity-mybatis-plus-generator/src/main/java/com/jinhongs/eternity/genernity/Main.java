@@ -134,7 +134,69 @@ public class Main {
                 .templateEngine(new FreemarkerTemplateEngine())
                 .execute();
     }
+
+    public static void modelGenerator() {
+        // 项目根路径
+        String projectPath = System.getProperty("user.dir");
+
+        FastAutoGenerator.create(
+                getUrlFromProperties(),
+                getUsernameFromProperties(),
+                getPasswordFromProperties()
+            )
+            // 全局配置
+            .globalConfig(builder -> {
+                builder.author("YangJinHong8888")
+                    // 指定各模块的代码输出路径
+                    .outputDir(projectPath) // 默认输出路径(/eternity-server)
+                    .disableOpenDir()       // 禁止自动打开输出目录
+                    .enableSpringdoc();       // 开启 openApi3 注解
+            })
+            // 数据库配置
+            .dataSourceConfig(builder -> builder.typeConvertHandler((globalConfig, typeRegistry, metaInfo) -> {
+                int typeCode = metaInfo.getJdbcType().TYPE_CODE;
+                if (typeCode == Types.SMALLINT) {
+                    // 自定义类型转换
+                    return DbColumnType.INTEGER;
+                }
+                return typeRegistry.getColumnType(metaInfo);
+            }))
+            // 包配置
+            .packageConfig(builder -> builder.parent("com.jinhongs")                                      // 设置父包名
+                .entity("eternity.model.entity")                            // Entity 包名（生成到 eternity-model 模块）
+                .serviceImpl("eternity.dao.mysql.repository")               // ServiceImpl 包名（生成到 eternity-service 模块）
+                .mapper("eternity.dao.mysql.mapper")                        // Mapper 包名（生成到 eternity-dao 模块）
+                .xml("eternity.dao.mysql.mapper.xml")                       // Mapper xml包名（生成到 eternity-dao 模块）
+                .controller("eternity.admin.web.controller")                // Controller 包名（生成到 eternity-web 模块） 目前不需要生成Controller
+                .pathInfo(new HashMap<>() {{
+                    // Entity → model模块
+                    put(OutputFile.entity,
+                        System.getProperty("user.dir") + "/eternity-model/src/main/java/com/jinhongs/eternity/model/entity");
+                }}))
+            // 策略配置
+            .strategyConfig(builder -> builder.addInclude("user_info", "user_auth", "role", "permission", "user_role", "role_permission", "articles"
+                    , "tags", "article_tags", "comments"
+                    , "article_likes", "article_favorites", "categories", "article_categories")  // 需生成的表名
+                // Entity 策略配置
+                .entityBuilder()
+                .enableSerialAnnotation()
+                .enableFileOverride()
+                .enableLombok(new ClassAnnotationAttributes("@Data","lombok.Data")) // 启用 Lombok 注解
+                .enableTableFieldAnnotation() // 启用字段注解
+                // 表字段自动填充
+                .addTableFills(new Column("create_time", FieldFill.INSERT))
+                .addTableFills(new Column("update_time", FieldFill.INSERT_UPDATE))
+                .javaTemplate("/templates/entity.java")
+                .build()
+                .mapperBuilder().disable().build()
+                .serviceBuilder().disable().build()
+                .controllerBuilder().disable().build()
+            )
+            // 使用默认 Velocity 引擎模板生成代码
+            .templateEngine(new FreemarkerTemplateEngine())
+            .execute();
+    }
     public static void main(String[] args) {
-        allGenerator();
+        modelGenerator();
     }
 }

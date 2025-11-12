@@ -1,11 +1,12 @@
 # Eternity 前端接口
 
 ## 项目结构
+
 ```
 my-project（父POM）
 ├── eternity-common                  # 基础工具
 ├── eternity-model                   # 依赖 common
-├── eternity-dao                     # 依赖 domain
+├── eternity-dao                     # 依赖 domain （其中mapper层负责单表数据库操作，repository层负责多个表数据库操作和构造Wrapper查询条件，repository负责对外提供接口）
 ├── eternity-service                 # 依赖 repository
 │   ├── dto                          # DTO（数据传输对象）
 └── eternity-web                     # 依赖 service
@@ -35,30 +36,37 @@ my-project（父POM）
 ## 开发
 
 ### 本地运行
+
 1. 加载pom依赖
 2. 创建数据库
 3. 填写profiles/application-dev.properties内所需参数信息，并配置application.yml激活正确配置文件
+
 ```
 例如
 spring:
    profiles:
        active: dev
 ```
+
 4. 打开SpringBoot启动类，启动项目
+
 ```
 eternity-web/eternity-admin-web/src/main/java/com/jinhongs/eternity/view/web/EternityAdminWebApplication.java
 ```
 
 ## 测试
+
 本项目使用Swagger创建测试接口，并导入ApiFox测试工具进行测试
+
 ## 部署
+
 本项目使用maven构建，打包时执行父Pom的maven命令
+
 ```
 maven clean 
 maven package
 即可打包成对应项目的jar包，然后自行部署
 ```
-
 
 ## 贡献代码
 

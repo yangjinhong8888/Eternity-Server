@@ -41,6 +41,8 @@
         <eternity.starter.security.version>3.5.4</eternity.starter.security.version>
         <!--spring-starter-security-core版本-->
         <eternity.security.core.version>6.5.2</eternity.security.core.version>
+        <!--spring-jakarta-validation版本-->
+        <eternity.jakarta.validation.version>3.0.2</eternity.jakarta.validation.version>
         <!--spring-starter-test版本-->
         <eternity.starter.test.version>3.5.4</eternity.starter.test.version>
         <!--spring-starter-redis-->
@@ -56,9 +58,7 @@
         <!--Slf4j版本-->
         <eternity.slf4j.version>2.0.17</eternity.slf4j.version>
         <!--logback版本-->
-        <eternity.eternity.logback.version>1.5.18</eternity.eternity.logback.version>
-
-
+        <eternity.eternity.logback.version>1.5.19</eternity.eternity.logback.version>
 
 
         <!--解决Springboot版本内存在问题的依赖-->
@@ -68,8 +68,8 @@
         <eternity.spring.webmvc.version>6.2.10</eternity.spring.webmvc.version>
         <!-- 指定 commons-lang 的版本，解决CVE-2025-48924 -->
         <eternity.commons.lang.version>3.18.0</eternity.commons.lang.version>
-
-
+        <!-- 指定 logback-core 的版本，解决CVE-2025-11226 -->
+        <eternity.eternity.logback.core.version>1.5.19</eternity.eternity.logback.core.version>
 
 
         <!--子模块版本-->
@@ -85,7 +85,7 @@
         <!--其他外部依赖版本-->
         <!--mapstruct版本-->
         <eternity.mapstruct.version>1.6.3</eternity.mapstruct.version>
-        <eternity.mybatis.plus.version>3.5.12</eternity.mybatis.plus.version>
+        <eternity.mybatis.plus.version>3.5.14</eternity.mybatis.plus.version>
         <!--springdoc版本-->
         <eternity.springdoc.version>2.8.12</eternity.springdoc.version>
         <!--mybatis-plus代码生成器-->
@@ -116,196 +116,207 @@
         排除不必要重复依赖声明，依赖已有模块的传递性（当多个模块均直接使用该依赖时，必须每个模块均需声明）。
         合理配置作用域以减少依赖传递。
     -->
-   <dependencyManagement>
-       <dependencies>
-           <!--模块依赖-->
-           <dependency>
-               <groupId>com.jinhongs</groupId>
-               <artifactId>eternity-common</artifactId>
-               <version>${eternity.common.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>com.jinhongs</groupId>
-               <artifactId>eternity-dao</artifactId>
-               <version>${eternity.dao.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>com.jinhongs</groupId>
-               <artifactId>eternity-model</artifactId>
-               <version>${eternity.model.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>com.jinhongs</groupId>
-               <artifactId>eternity-service</artifactId>
-               <version>${eternity.service.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>com.jinhongs</groupId>
-               <artifactId>eternity-web</artifactId>
-               <version>${eternity.web.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>com.jinhongs</groupId>
-               <artifactId>eternity-view-web</artifactId>
-               <version>${eternity.web.view.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>com.jinhongs</groupId>
-               <artifactId>eternity-admin-web</artifactId>
-               <version>${eternity.web.admin.version}</version>
-           </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <!--模块依赖-->
+            <dependency>
+                <groupId>com.jinhongs</groupId>
+                <artifactId>eternity-common</artifactId>
+                <version>${eternity.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jinhongs</groupId>
+                <artifactId>eternity-dao</artifactId>
+                <version>${eternity.dao.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jinhongs</groupId>
+                <artifactId>eternity-model</artifactId>
+                <version>${eternity.model.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jinhongs</groupId>
+                <artifactId>eternity-service</artifactId>
+                <version>${eternity.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jinhongs</groupId>
+                <artifactId>eternity-web</artifactId>
+                <version>${eternity.web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jinhongs</groupId>
+                <artifactId>eternity-view-web</artifactId>
+                <version>${eternity.web.view.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jinhongs</groupId>
+                <artifactId>eternity-admin-web</artifactId>
+                <version>${eternity.web.admin.version}</version>
+            </dependency>
 
 
-           <!--处理CVE-2025-41242问题-->
-           <dependency>
-               <groupId>org.springframework</groupId>
-               <artifactId>spring-beans</artifactId>
-               <version>${eternity.spring.webmvc.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>org.springframework</groupId>
-               <artifactId>spring-webmvc</artifactId>
-               <version>${eternity.spring.webmvc.version}</version>
-           </dependency>
-           <!--处理CVE-2025-48924问题-->
-           <dependency>
-               <groupId>org.apache.commons</groupId>
-               <artifactId>commons-lang3</artifactId>
-               <version>${eternity.commons.lang.version}</version>
-           </dependency>
+            <!--处理CVE-2025-41242问题-->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${eternity.spring.webmvc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${eternity.spring.webmvc.version}</version>
+            </dependency>
+            <!--处理CVE-2025-48924问题-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${eternity.commons.lang.version}</version>
+            </dependency>
+            <!--处理CVE-2025-11226问题-->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${eternity.eternity.logback.core.version}</version>
+            </dependency>
+
+            <!--外部模块依赖-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${eternity.starter.web.version}</version>
+            </dependency>
+            <!--springboot核心依赖，包括@Service @Component注解等-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${eternity.starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${eternity.starter.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${eternity.security.core.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${eternity.starter.test.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${eternity.starter.redis.version}</version>
+            </dependency>
+            <!--Java注解依赖-->
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${eternity.jakarta.validation.version}</version>
+            </dependency>
+            <!--Redis序列化方式 dao模块引入，为Redis客户端配置序列化-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${eternity.jackson.databind.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <!--Mysql驱动-->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${eternity.mysql.connector.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <!--lombok依赖，仅在编译期生效-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${eternity.lombok.version}</version>
+                <optional>true</optional>
+                <scope>provided</scope>
+            </dependency>
+            <!--slf4j依赖 在公共模块引入所有模块皆可使用-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${eternity.slf4j.version}</version>
+            </dependency>
+            <!--日志具体实现依赖  只需要在web模块引入slf4j会自动查询依赖树并绑定唯一具体实现-->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${eternity.eternity.logback.version}</version>
+            </dependency>
 
 
-           <!--外部模块依赖-->
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-web</artifactId>
-               <version>${eternity.starter.web.version}</version>
-           </dependency>
-           <!--springboot核心依赖，包括@Service @Component注解等-->
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter</artifactId>
-               <version>${eternity.starter.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-security</artifactId>
-               <version>${eternity.starter.security.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>org.springframework.security</groupId>
-               <artifactId>spring-security-core</artifactId>
-               <version>${eternity.security.core.version}</version>
-               <scope>compile</scope>
-           </dependency>
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-test</artifactId>
-               <version>${eternity.starter.test.version}</version>
-               <scope>test</scope>
-           </dependency>
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-data-redis</artifactId>
-               <version>${eternity.starter.redis.version}</version>
-           </dependency>
-           <!--Redis序列化方式 dao模块引入，为Redis客户端配置序列化-->
-           <dependency>
-               <groupId>com.fasterxml.jackson.core</groupId>
-               <artifactId>jackson-databind</artifactId>
-               <version>${eternity.jackson.databind.version}</version>
-               <optional>true</optional>
-           </dependency>
-           <!--Mysql驱动-->
-           <dependency>
-               <groupId>com.mysql</groupId>
-               <artifactId>mysql-connector-j</artifactId>
-               <version>${eternity.mysql.connector.version}</version>
-               <scope>runtime</scope>
-           </dependency>
-           <!--lombok依赖，除model模块外，其他都是为使用@Slf4j注解引入，仅在编译期生效-->
-           <dependency>
-               <groupId>org.projectlombok</groupId>
-               <artifactId>lombok</artifactId>
-               <version>${eternity.lombok.version}</version>
-               <optional>true</optional>
-               <scope>provided</scope>
-           </dependency>
-           <!--slf4j依赖 在公共模块引入所有模块皆可使用-->
-           <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-api</artifactId>
-               <version>${eternity.slf4j.version}</version>
-           </dependency>
-           <!--日志具体实现依赖  只需要在web模块引入slf4j会自动查询依赖树并绑定唯一具体实现-->
-           <dependency>
-               <groupId>ch.qos.logback</groupId>
-               <artifactId>logback-classic</artifactId>
-               <version>${eternity.eternity.logback.version}</version>
-           </dependency>
-
-
-           <!--mapstruct 在web模块和service模块引入使用，进行Object转换-->
-           <dependency>
-               <groupId>org.mapstruct</groupId>
-               <artifactId>mapstruct</artifactId>
-               <version>${eternity.mapstruct.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>org.mapstruct</groupId>
-               <artifactId>mapstruct-processor</artifactId>
-               <version>${eternity.mapstruct.version}</version>
-               <optional>true</optional>
-               <scope>provided</scope>
-           </dependency>
-           <!--mybatis-plus 在dao模块引入，为访问mysql提供支持-->
-           <dependency>
-               <groupId>com.baomidou</groupId>
-               <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-               <version>${eternity.mybatis.plus.version}</version>
-           </dependency>
-           <dependency>
-               <groupId>com.baomidou</groupId>
-               <artifactId>mybatis-plus</artifactId>
-               <version>${eternity.mybatis.plus.version}</version>
-               <scope>compile</scope>
-           </dependency>
-           <!--此包仅作为mybatis-plus代码生成使用-->
-           <dependency>
-               <groupId>com.baomidou</groupId>
-               <artifactId>mybatis-plus-generator</artifactId>
-               <version>${eternity.mybatis.plus.generator.version}</version>
-               <optional>true</optional>
-           </dependency>
-           <!-- mybatis-plus 代码生成器的freemarker模板引擎 -->
-           <dependency>
-               <groupId>org.freemarker</groupId>
-               <artifactId>freemarker</artifactId>
-               <version>${eternity.freemarker.generator.version}</version>
-               <optional>true</optional>
-           </dependency>
-           <!--mybatis-plus 代码生成器的velocity模板引擎-->
-           <dependency>
-               <groupId>org.apache.velocity</groupId>
-               <artifactId>velocity-engine-core</artifactId>
-               <version>${eternity.velocity.generator.version}</version>
-               <optional>true</optional>
-           </dependency>
-           <!--api文档-->
-           <!--在web模块引入实现路由文档 配合api fox实现在线文档-->
-           <dependency>
-               <groupId>org.springdoc</groupId>
-               <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-               <version>${eternity.springdoc.version}</version>
-           </dependency>
-           <!--springdoc-核心注解依赖，在model模块引入，model能够使用swagger注解，注解解析在web模块完成 注:版本依赖于springdoc，要保持同步-->
-           <dependency>
-               <groupId>org.springdoc</groupId>
-               <artifactId>springdoc-openapi-starter-common</artifactId>
-               <version>${eternity.springdoc.version}</version>
-           </dependency>
-       </dependencies>
-   </dependencyManagement>
+            <!--mapstruct 在需要的模块引入使用，进行Object转换-->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${eternity.mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${eternity.mapstruct.version}</version>
+                <optional>true</optional>
+                <scope>provided</scope>
+            </dependency>
+            <!--mybatis-plus 在dao模块引入，为访问mysql提供支持-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${eternity.mybatis.plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${eternity.mybatis.plus.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <!--此包仅作为mybatis-plus代码生成使用-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${eternity.mybatis.plus.generator.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <!-- mybatis-plus 代码生成器的freemarker模板引擎 -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${eternity.freemarker.generator.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <!--mybatis-plus 代码生成器的velocity模板引擎-->
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>${eternity.velocity.generator.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <!--api文档-->
+            <!--在web模块引入实现路由文档 配合api fox实现在线文档-->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${eternity.springdoc.version}</version>
+            </dependency>
+            <!--springdoc-核心注解依赖，在model模块引入，model能够使用swagger注解，注解解析在web模块完成 注:版本依赖于springdoc，要保持同步-->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-common</artifactId>
+                <version>${eternity.springdoc.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!--跟模块下配置解析器，全局解析-->
     <build>

@@ -53,6 +53,12 @@
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
         </dependency>
 
+        <!--对象转换模块-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+
         <!--Slf4j注解使用，仅在编译期生效-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -75,6 +81,12 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                        </path>
+
+                        <!-- MapStruct -->
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @MapperScan({
-        "com.jinhongs.eternity.dao.mysql.config",
         "com.jinhongs.eternity.dao.mysql.mapper",
 })
 @ComponentScan({
@@ -16,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
         "com.jinhongs.eternity.view.web",
         "com.jinhongs.eternity.dao.redis.config",
         "com.jinhongs.eternity.dao.redis.client",
+        "com.jinhongs.eternity.dao.mysql.config", // Component注解都要放在这里扫描
         "com.jinhongs.eternity.dao.mysql.repository"
 })
 public class EternityViewWebApplication {

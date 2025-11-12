@@ -10,19 +10,22 @@ public class UserInfoDTO {
      * 全局唯一用户名
      */
     @Schema(description = "用户id")
-    private String userId;
+    private long userId;
+
+    @Schema(description = "认证类型（username/phone/email/wechat）")
+    private String identityType;
 
     /**
-     * 全局唯一用户名
+     * 账号
      */
-    @Schema(description = "全局唯一用户名")
-    private String usercode;
+    @Schema(description = "账号")
+    private String identifier;
 
     /**
-     * 昵称
+     * 密码
      */
-    @Schema(description = "昵称")
-    private String username;
+    @Schema(description = "密码")
+    private String password;
 
     /**
      * 头像URL

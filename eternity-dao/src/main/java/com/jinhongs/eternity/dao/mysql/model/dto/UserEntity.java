@@ -1,4 +1,4 @@
-package com.jinhongs.eternity.service.model.dto;
+package com.jinhongs.eternity.dao.mysql.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SecurityUserInfoDTO {
+public class UserEntity {
 
     /**
      * 全局唯一用户名

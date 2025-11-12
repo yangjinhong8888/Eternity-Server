@@ -1,6 +1,6 @@
 package com.jinhongs.eternity.view.web.security;
 
-import com.jinhongs.eternity.view.web.model.converter.UserConverter;
+import com.jinhongs.eternity.view.web.model.converter.ControllerUserConverter;
 import com.jinhongs.eternity.service.model.dto.SecurityUserInfoDTO;
 import com.jinhongs.eternity.service.service.WebSecurityService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,18 +22,19 @@ public class SecurityUserDetailsServiceImpl implements UserDetailsService {
     public SecurityUserDetailsServiceImpl(WebSecurityService userService) {
         this.securityService = userService;
     }
+
     @Override
     public SecurityUserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
         // 获取用户基础信息
         SecurityUserInfoDTO securityUserInfoDTO = securityService.getSecurityUserInfoByUsername(username);
 
         // 判断用户信息是否为空
-        if (securityUserInfoDTO == null){
+        if (securityUserInfoDTO == null) {
             log.error("用户不存在: {}", username);
             throw new UsernameNotFoundException("用户不存在");
         }
 
         // 返回Security所需形式的用户信息
-        return UserConverter.INSTANCE.securityUserInfoDTOTosecurityUserDetailsImpl(securityUserInfoDTO);
+        return ControllerUserConverter.INSTANCE.tosecurityUserDetailsImpl(securityUserInfoDTO);
     }
 }
