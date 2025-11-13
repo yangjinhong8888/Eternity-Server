@@ -1,6 +1,5 @@
 package com.jinhongs.eternity.admin.web.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(401);
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-            String.format("{\"code\": %d, \"msg\": \"%s\"}", 401, authException.getMessage())
+                String.format("{\"code\": %d, \"msg\": \"%s %s\"}", 401, "请登录后重试", authException.getMessage())
         );
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -74,10 +75,10 @@ public class SecurityConfig {
     /*
       自定义自定义认证过滤器
      */
-    // @Bean
-    // public CustomAuthenticationFilter customAuthenticationFilter() {
-    //     return new CustomAuthenticationFilter(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET,"/login"));
-    // }
+    @Bean
+    public CookieAuthenticationFilter cookieAuthenticationFilter() {
+        return new CookieAuthenticationFilter();
+    }
 
     /**
      * 创建 JsonAuthenticationEntryPoint Bean
@@ -111,7 +112,6 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // http.addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http
                 // 开启授权保护
                 .authorizeHttpRequests(authorize -> authorize
@@ -149,6 +149,9 @@ public class SecurityConfig {
                 .sessionManagement(
                         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ); // 基于token，不需要session
+
+        // 接口请求时，Cookie校验过滤器
+        http.addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

@@ -1,6 +1,5 @@
 package com.jinhongs.eternity.admin.web.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,7 +16,7 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(403);
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-            String.format("{\"code\": %d, \"msg\": \"%s\"}", 403, accessDeniedException.getMessage())
+                String.format("{\"code\": %d, \"msg\": \"%s %s\"}", 403, "权限不足，请联系管理员", accessDeniedException.getMessage())
         );
     }
 }

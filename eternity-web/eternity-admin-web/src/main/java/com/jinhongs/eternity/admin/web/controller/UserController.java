@@ -52,7 +52,14 @@ public class UserController {
         // 配置 Cookie 属性
         cookie.setPath("/");                  // 生效路径：全站
         cookie.setHttpOnly(true);             // 禁止 JavaScript 访问
+        cookie.setMaxAge(60 * 60 * 24 * 15);  // 登录15天过期
         response.addCookie(cookie);
         return ResponseResultUtils.success();
+    }
+
+    @Operation(summary = "查询用户信息接口")
+    @PostMapping("/getUserInfo")
+    public ResponseResult<String> getUserInfo() {
+        return ResponseResultUtils.success("查到了用户信息");
     }
 }

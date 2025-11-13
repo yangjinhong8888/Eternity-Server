@@ -27,10 +27,11 @@ public class SecurityUserDetailsImpl implements UserDetails {
     private List<GrantedAuthority> authorities;
 
     //----------------- 用户状态字段（目前账号没有这些功能，暂时全部设置为true） ------------------
-    //    private boolean enabled = true;                // 是否启用
-    //    private boolean accountNonExpired = true;     // 账户是否未过期
-    //    private boolean accountNonLocked = true;      // 账户是否未锁定
-    //    private boolean credentialsNonExpired = true; // 凭证是否未过期
+    //  接口中定义了 isEnabled() （或类似）方法，Jackson默认把它当成属性处理,所以这里定义出来，否则反序列化的时候会报错字段未找到
+    private boolean enabled = true;                // 是否启用
+    private boolean accountNonExpired = true;     // 账户是否未过期
+    private boolean accountNonLocked = true;      // 账户是否未锁定
+    private boolean credentialsNonExpired = true; // 凭证是否未过期
 
     //----------------- UserDetails 接口方法实现 -----------------
     @Override

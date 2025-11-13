@@ -25,6 +25,49 @@ public class RedisClient {
     // ======================== 通用操作 ========================
 
     /**
+     * 设置指定key的值（永久有效）
+     *
+     * @param key   键
+     * @param value 值
+     */
+    public void set(String key, Object value) {
+        redisTemplate.opsForValue().set(key, value);
+    }
+
+    /**
+     * 获取指定key的值
+     *
+     * @param key 键
+     * @return 值，如果key不存在返回null
+     */
+    public Object get(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 删除指定key
+     *
+     * @param key 键
+     * @return 是否删除成功
+     */
+    public boolean delete(String key) {
+        return Boolean.TRUE.equals(redisTemplate.delete(key));
+    }
+
+    /**
+     * 设置指定key的值并指定过期时间
+     *
+     * @param key     键
+     * @param value   值
+     * @param timeout 过期时间
+     * @param unit    时间单位
+     */
+    public void setEx(String key, Object value, long timeout, TimeUnit unit) {
+        redisTemplate.opsForValue().set(key, value, timeout, unit);
+    }
+
+
+    /**
      * 为指定的key设置过期时间
      *
      * @param key  键

@@ -1,5 +1,6 @@
 package com.jinhongs.eternity.service.service.impl;
 
+import com.jinhongs.eternity.common.constant.RedisConstants;
 import com.jinhongs.eternity.common.constant.UserInfoConstants;
 import com.jinhongs.eternity.common.enums.RegisterIdentityTypeEnum;
 import com.jinhongs.eternity.common.exception.GeneralException;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -116,11 +118,12 @@ public class UserServiceImpl implements UserService {
         // 3. 手动设置上下文
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 4. 生成令牌或返回用户信息
-
+        // 4. 生成令牌(如有需要可以同时返回用户信息)
         // 生成一个uuid，并把对应的用户信息存储在redis中
         String uuid = java.util.UUID.randomUUID().toString();
-        redisClient.setStringValue(uuid, SecurityContextHolder.getContext().getAuthentication().getName());
+        redisClient.setEx(RedisConstants.getBaseSessionAdmin(uuid), SecurityContextHolder.getContext().getAuthentication(), 15, TimeUnit.DAYS);
+
+        log.info("登录成功：{}", SecurityContextHolder.getContext().getAuthentication());
 
         return uuid;
     }

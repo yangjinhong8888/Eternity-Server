@@ -6,12 +6,13 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
- * 自定义认证令牌 作为技术学习储备，暂未使用
+ * 自定义认证令牌，配合Provider组成一套认证流程 作为技术学习储备，暂未使用
  */
 public class CustomAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
     private String oauthToken;
+
     public CustomAuthenticationToken(String oauthToken) {
         super(null);
         this.principal = oauthToken;

@@ -20,9 +20,12 @@ public class RedisConstants {
     /**
      * 登录凭证
      */
-    public static final String BASE_SESSION = BASE + "session:";
+    public static final String BASE_SESSION = BASE + "token:";
 
-    public static final String BASE_SESSION_ADMIN = BASE_SESSION + "admin:";
+    public static final String BASE_SESSION_ADMIN = BASE_SESSION + "admin:%s";
     public static final String BASE_SESSION_VIEW = BASE_SESSION + "view:";
 
+    public static String getBaseSessionAdmin(String token) {
+        return String.format(BASE_SESSION_ADMIN, token);
+    }
 }

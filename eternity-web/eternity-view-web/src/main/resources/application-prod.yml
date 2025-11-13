@@ -8,12 +8,12 @@ spring:
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver                           # mysql数据库连接驱动
-    url: ${dev.view.datasource.url}                                       # mysql数据链接
-    username: ${dev.view.datasource.username}                             # mysql数据库账号
-    password: ${dev.view.datasource.password}                             # mysql数据库密码
+    url: ${prod.view.datasource.url}                                       # mysql数据链接
+    username: ${prod.view.datasource.username}                             # mysql数据库账号
+    password: ${prod.view.datasource.password}                             # mysql数据库密码
   data:
     redis:
-      host: ${dev.view.redis.host}                                        #redis 链接
-      port: ${dev.view.redis.port}                                        #redis 端口
-      password: ${dev.view.redis.password}                                #redis 密码
+      host: ${prod.view.redis.host}                                        #redis 链接
+      port: ${prod.view.redis.port}                                        #redis 端口
+      password: ${prod.view.redis.password}                                #redis 密码
       database: 0                                                         #redis 数据库

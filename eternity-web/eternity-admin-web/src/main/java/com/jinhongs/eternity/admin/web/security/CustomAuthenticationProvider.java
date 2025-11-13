@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 /**
- * 自定义认证提供者 (作为技术学习储备，暂未使用)
+ * 自定义认证提供者，和Token组成一套认证流程 (作为技术学习储备，暂未使用)
  */
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
