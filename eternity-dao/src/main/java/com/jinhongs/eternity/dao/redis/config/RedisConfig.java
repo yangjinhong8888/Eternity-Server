@@ -27,7 +27,7 @@ public class RedisConfig {
 
         // 创建 ObjectMapper 并添加默认配置
         ObjectMapper objectMapper = new ObjectMapper();
-        // 序列化所有字段
+        // 字段可见性配置, 序列化所有字段
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         // 默认类型推断功能 此项必须配置，否则如果序列化的对象里边还有对象，则会无法反序列化成功：(使用@JsonTypeInfo自定义所有对象信息也行 mapper.addMixIn(Authentication.class, AuthenticationMixIn.class);)
         //     class java.util.LinkedHashMap cannot be cast to class xxxx

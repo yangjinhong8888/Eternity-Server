@@ -1,6 +1,5 @@
 package com.jinhongs.eternity.view.web.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(200);
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-            String.format("{\"code\": %d, \"msg\": \"%s\"}", 403, "权限不足")
+                String.format("{\"code\": %d, \"msg\": \"%s %s\"}", 403, "权限不足，请联系管理员", accessDeniedException.getMessage())
         );
     }
 }

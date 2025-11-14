@@ -1,6 +1,5 @@
 package com.jinhongs.eternity.admin.web.security;
 
-import com.jinhongs.eternity.service.service.WebSecurityService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,17 +27,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * 创建用户详情服务 Bean 所有security使用的bean应该都在security配置内注册
-     *
-     * @param webSecurityService WebSecurityService 实例
-     * @return UserDetailsService 实例
-     */
-    @Bean
-    public UserDetailsService userDetailsService(WebSecurityService webSecurityService) {
-        return new SecurityUserDetailsServiceImpl(webSecurityService);
     }
 
     /**
@@ -132,6 +120,8 @@ public class SecurityConfig {
                         // 已认证的请求会被自动授权
                         .authenticated()
                 )
+                // 接口请求时，Cookie校验过滤器
+                .addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 // 异常捕获
                 .exceptionHandling(handling -> handling
                         // 处理未登录的 401 响应
@@ -149,9 +139,6 @@ public class SecurityConfig {
                 .sessionManagement(
                         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ); // 基于token，不需要session
-
-        // 接口请求时，Cookie校验过滤器
-        http.addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

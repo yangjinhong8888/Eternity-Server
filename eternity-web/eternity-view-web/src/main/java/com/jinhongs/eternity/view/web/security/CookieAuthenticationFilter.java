@@ -1,4 +1,4 @@
-package com.jinhongs.eternity.admin.web.security;
+package com.jinhongs.eternity.view.web.security;
 
 import com.jinhongs.eternity.common.constant.RedisConstants;
 import com.jinhongs.eternity.dao.redis.client.RedisClient;
@@ -38,7 +38,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
-        // TODO后期需要改成JWT或者其他认证
+        // TODO 需要改成JWT或者其他认证
         if (token == null) {
             log.info("请求不包含cookie");
             // 没有获得cookie，证明登录过期或者第一次访问，直接放行给SpringSecurity处理

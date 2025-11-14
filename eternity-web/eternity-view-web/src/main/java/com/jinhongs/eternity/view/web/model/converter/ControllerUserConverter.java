@@ -1,35 +1,21 @@
 package com.jinhongs.eternity.view.web.model.converter;
 
-import com.jinhongs.eternity.service.model.dto.SecurityUserInfoDTO;
-import com.jinhongs.eternity.view.web.security.SecurityUserDetailsImpl;
+import com.jinhongs.eternity.service.model.dto.UserLoginDTO;
+import com.jinhongs.eternity.service.model.dto.UserRegisterDTO;
+import com.jinhongs.eternity.view.web.model.dto.params.UserLoginParams;
+import com.jinhongs.eternity.view.web.model.dto.params.UserRegisterParams;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper
 public interface ControllerUserConverter {
 
     ControllerUserConverter INSTANCE = Mappers.getMapper(ControllerUserConverter.class);
 
+    @Mapping(target = "userId", ignore = true)
+    UserRegisterDTO toUserRegisterDTO(UserRegisterParams userRegisterParams);
 
-    @Named("tooGrantedAuthority")
-    // 这里必须使用 GrantedAuthority 否则会因为泛型类型不一致会导致 MapStruct 无法识别
-    default List<GrantedAuthority> tooGrantedAuthority(List<String> authorities) {
-        if (authorities == null || authorities.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.trim()))
-                .collect(Collectors.toList());
-    }
+    UserLoginDTO toUserLoginDTO(UserLoginParams userLoginParams);
 
-    @Mapping(source = "authorities", target = "authorities", qualifiedByName = "tooGrantedAuthority")
-    SecurityUserDetailsImpl tosecurityUserDetailsImpl(SecurityUserInfoDTO securityUserInfoDTO);
 }

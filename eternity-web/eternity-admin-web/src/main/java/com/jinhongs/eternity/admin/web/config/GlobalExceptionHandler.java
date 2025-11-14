@@ -2,8 +2,8 @@ package com.jinhongs.eternity.admin.web.config;
 
 import com.jinhongs.eternity.common.enums.ResponseCode;
 import com.jinhongs.eternity.common.exception.GeneralException;
-import com.jinhongs.eternity.common.result.ResponseResult;
-import com.jinhongs.eternity.common.result.ResponseResultUtils;
+import com.jinhongs.eternity.common.utils.result.ResponseResult;
+import com.jinhongs.eternity.common.utils.result.ResponseResultUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;

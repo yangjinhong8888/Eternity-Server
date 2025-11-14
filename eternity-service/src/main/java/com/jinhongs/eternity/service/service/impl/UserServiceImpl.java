@@ -121,9 +121,10 @@ public class UserServiceImpl implements UserService {
         // 4. 生成令牌(如有需要可以同时返回用户信息)
         // 生成一个uuid，并把对应的用户信息存储在redis中
         String uuid = java.util.UUID.randomUUID().toString();
-        redisClient.setEx(RedisConstants.getBaseSessionAdmin(uuid), SecurityContextHolder.getContext().getAuthentication(), 15, TimeUnit.DAYS);
+        // TODO，这里应该使用jwt或者其他的能表明用户信息的键，这样用户已登录的时候，直接查询返回，就不用重新存数据了
+        redisClient.setEx(RedisConstants.getBaseSessionAdmin(uuid), SecurityContextHolder.getContext().getAuthentication().getPrincipal(), 15, TimeUnit.DAYS);
 
-        log.info("登录成功：{}", SecurityContextHolder.getContext().getAuthentication());
+        log.info("登录成功：{}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         return uuid;
     }

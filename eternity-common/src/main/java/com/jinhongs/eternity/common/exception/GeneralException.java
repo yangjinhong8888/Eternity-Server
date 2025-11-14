@@ -3,6 +3,9 @@ package com.jinhongs.eternity.common.exception;
 import com.jinhongs.eternity.common.enums.ResponseCode;
 import lombok.Getter;
 
+/**
+ * Eternity通用异常处理器
+ */
 @Getter
 public class GeneralException extends RuntimeException {
     private final Integer code;

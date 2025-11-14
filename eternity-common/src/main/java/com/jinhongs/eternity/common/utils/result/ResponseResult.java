@@ -1,4 +1,4 @@
-package com.jinhongs.eternity.common.result;
+package com.jinhongs.eternity.common.utils.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

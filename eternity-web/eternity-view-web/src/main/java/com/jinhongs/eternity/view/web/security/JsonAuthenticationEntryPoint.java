@@ -1,6 +1,5 @@
 package com.jinhongs.eternity.view.web.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -17,7 +16,7 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(401);
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-            String.format("{\"code\": %d, \"msg\": \"%s\"}", 401, "请先登录")
+                String.format("{\"code\": %d, \"msg\": \"%s %s\"}", 401, "请登录后重试", authException.getMessage())
         );
     }
 }

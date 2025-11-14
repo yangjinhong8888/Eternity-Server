@@ -1,11 +1,14 @@
-package com.jinhongs.eternity.admin.web.security;
+package com.jinhongs.eternity.service.service.impl;
 
-import com.jinhongs.eternity.admin.web.model.converter.ControllerUserConverter;
-import com.jinhongs.eternity.service.model.dto.SecurityUserInfoDTO;
-import com.jinhongs.eternity.service.service.WebSecurityService;
+import com.jinhongs.eternity.dao.mysql.model.dto.UserEntity;
+import com.jinhongs.eternity.dao.mysql.repository.UserInfoRepository;
+import com.jinhongs.eternity.service.model.converter.ServiceUserConverter;
+import com.jinhongs.eternity.service.model.dto.security.SecurityUserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 /**
  * 在SecurityConfig 中配置，这里不用配置@Service注入
@@ -15,26 +18,28 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * security 会根据不同的AuthenticationToken，自动调用对应的 Provider 来处理认证请求。
  */
 @Slf4j
+@Service
 public class SecurityUserDetailsServiceImpl implements UserDetailsService {
 
-    private final WebSecurityService securityService;
+    private final UserInfoRepository userInfoRepository;
 
-    public SecurityUserDetailsServiceImpl(WebSecurityService userService) {
-        this.securityService = userService;
+    @Autowired
+    public SecurityUserDetailsServiceImpl(UserInfoRepository userInfoRepository) {
+        this.userInfoRepository = userInfoRepository;
     }
+
 
     @Override
     public SecurityUserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
         // 获取用户基础信息
-        SecurityUserInfoDTO securityUserInfoDTO = securityService.getSecurityUserInfoByUsername(username);
-
-        // 判断用户信息是否为空
-        if (securityUserInfoDTO == null) {
+        UserEntity userEntity;
+        try {
+            userEntity = userInfoRepository.findUserIdByUserName(username);
+        } catch (Exception e) {
             log.error("用户不存在: {}", username);
             throw new UsernameNotFoundException("用户不存在");
         }
-
         // 返回Security所需形式的用户信息
-        return ControllerUserConverter.INSTANCE.toSecurityUserDetailsImpl(securityUserInfoDTO);
+        return ServiceUserConverter.INSTANCE.toSecurityUserDetailsImpl(userEntity);
     }
 }
