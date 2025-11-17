@@ -7,5 +7,7 @@ public interface UserService {
 
     boolean register(UserRegisterDTO userRegisterDTO);
 
-    String login(UserLoginDTO userLoginDTO);
+    String adminLogin(UserLoginDTO userLoginDTO);
+
+    String viewLogin(UserLoginDTO userLoginDTO);
 }

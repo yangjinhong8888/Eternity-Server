@@ -51,7 +51,7 @@ public class RedisClient {
      * @return 是否删除成功
      */
     public boolean delete(String key) {
-        return Boolean.TRUE.equals(redisTemplate.delete(key));
+        return redisTemplate.delete(key);
     }
 
     /**
@@ -64,6 +64,16 @@ public class RedisClient {
      */
     public void setEx(String key, Object value, long timeout, TimeUnit unit) {
         redisTemplate.opsForValue().set(key, value, timeout, unit);
+    }
+
+    /**
+     * 批量删除键
+     *
+     * @param keys 键集合
+     * @return 成功删除的键数量
+     */
+    public long deleteBatch(Set<String> keys) {
+        return redisTemplate.delete(keys);
     }
 
 
@@ -280,6 +290,193 @@ public class RedisClient {
      */
     public Set<Object> getSetDifference(String key, String destKey) {
         return redisTemplate.opsForSet().difference(key, destKey);
+    }
+
+    // ======================== SortSet类型操作 =====================
+
+    /**
+     * 向有序集合(ZSet)中添加元素
+     *
+     * @param key   键
+     * @param value 值
+     * @param score 分数
+     */
+    public void addToZSet(String key, String value, double score) {
+        redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中指定元素的分数
+     *
+     * @param key   键
+     * @param value 值
+     * @return 分数
+     */
+    public Double getZSetScore(String key, Object value) {
+        return redisTemplate.opsForZSet().score(key, value);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中元素的数量
+     *
+     * @param key 键
+     * @return 元素数量
+     */
+    public Long getZSetSize(String key) {
+        return redisTemplate.opsForZSet().zCard(key);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中指定范围的元素（按分数从小到大）
+     *
+     * @param key   键
+     * @param start 开始索引
+     * @param end   结束索引
+     * @return 元素集合
+     */
+    public Set<Object> getZSetRange(String key, long start, long end) {
+        return redisTemplate.opsForZSet().range(key, start, end);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中指定范围的元素和分数（按分数从小到大）
+     *
+     * @param key   键
+     * @param start 开始索引
+     * @param end   结束索引
+     * @return 元素和分数的映射
+     */
+    public Set<org.springframework.data.redis.core.ZSetOperations.TypedTuple<Object>> getZSetRangeWithScores(String key, long start, long end) {
+        return redisTemplate.opsForZSet().rangeWithScores(key, start, end);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中指定分数范围的元素
+     *
+     * @param key      键
+     * @param minScore 最小分数
+     * @param maxScore 最大分数
+     * @return 元素集合
+     */
+    public Set<Object> getZSetRangeByScore(String key, double minScore, double maxScore) {
+        return redisTemplate.opsForZSet().rangeByScore(key, minScore, maxScore);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中指定分数范围的元素和分数
+     *
+     * @param key      键
+     * @param minScore 最小分数
+     * @param maxScore 最大分数
+     * @return 元素和分数的映射
+     */
+    public Set<org.springframework.data.redis.core.ZSetOperations.TypedTuple<Object>> getZSetRangeByScoreWithScores(String key, double minScore, double maxScore) {
+        return redisTemplate.opsForZSet().rangeByScoreWithScores(key, minScore, maxScore);
+    }
+
+    /**
+     * 移除有序集合(ZSet)中指定的元素
+     *
+     * @param key    键
+     * @param values 要移除的元素
+     * @return 移除的元素数量
+     */
+    public Long removeZSetMembers(String key, Object... values) {
+        return redisTemplate.opsForZSet().remove(key, values);
+    }
+
+    /**
+     * 移除有序集合(ZSet)中指定排名范围的元素
+     *
+     * @param key   键
+     * @param start 开始排名
+     * @param end   结束排名
+     * @return 移除的元素数量
+     */
+    public Long removeZSetRangeByRank(String key, long start, long end) {
+        return redisTemplate.opsForZSet().removeRange(key, start, end);
+    }
+
+    /**
+     * 移除有序集合(ZSet)中指定分数范围的元素
+     *
+     * @param key      键
+     * @param minScore 最小分数
+     * @param maxScore 最大分数
+     * @return 移除的元素数量
+     */
+    public Long removeZSetRangeByScore(String key, double minScore, double maxScore) {
+        return redisTemplate.opsForZSet().removeRangeByScore(key, minScore, maxScore);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中元素的排名（按分数从小到大）
+     *
+     * @param key   键
+     * @param value 值
+     * @return 排名，从0开始
+     */
+    public Long getZSetRank(String key, Object value) {
+        return redisTemplate.opsForZSet().rank(key, value);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中元素的逆序排名（按分数从大到小）
+     *
+     * @param key   键
+     * @param value 值
+     * @return 排名，从0开始
+     */
+    public Long getZSetReverseRank(String key, Object value) {
+        return redisTemplate.opsForZSet().reverseRank(key, value);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中指定范围的元素（按分数从大到小）
+     *
+     * @param key   键
+     * @param start 开始索引
+     * @param end   结束索引
+     * @return 元素集合
+     */
+    public Set<Object> getZSetReverseRange(String key, long start, long end) {
+        return redisTemplate.opsForZSet().reverseRange(key, start, end);
+    }
+
+    /**
+     * 获取有序集合(ZSet)中指定范围的元素和分数（按分数从大到小）
+     *
+     * @param key   键
+     * @param start 开始索引
+     * @param end   结束索引
+     * @return 元素和分数的映射
+     */
+    public Set<org.springframework.data.redis.core.ZSetOperations.TypedTuple<Object>> getZSetReverseRangeWithScores(String key, long start, long end) {
+        return redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end);
+    }
+
+    /**
+     * 获取有序集合(ZSet)的分数区间内的元素数量
+     *
+     * @param key      键
+     * @param minScore 最小分数
+     * @param maxScore 最大分数
+     * @return 元素数量
+     */
+    public Long getZSetCountByScore(String key, double minScore, double maxScore) {
+        return redisTemplate.opsForZSet().count(key, minScore, maxScore);
+    }
+
+    /**
+     * 为有序集合(ZSet)中指定元素增加分数
+     *
+     * @param key   键
+     * @param value 值
+     * @param delta 增加的分数
+     * @return 增加后的分数
+     */
+    public Double incrementZSetScore(String key, String value, double delta) {
+        return redisTemplate.opsForZSet().incrementScore(key, value, delta);
     }
 
     // ======================== Hash类型操作 ========================
@@ -509,5 +706,24 @@ public class RedisClient {
      */
     public Object popFromRightOfListWithTimeout(String key, long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().rightPop(key, timeout, unit);
+    }
+
+
+    // ======================== 执行lua脚本 ========================
+
+    /**
+     * 执行Lua脚本
+     *
+     * @param script Lua脚本内容
+     * @param keys   键列表
+     * @param args   参数列表
+     * @return 脚本执行结果
+     */
+    public Object executeScript(String script, List<String> keys, Object... args) {
+        return redisTemplate.execute(
+                new org.springframework.data.redis.core.script.DefaultRedisScript<>(script),
+                keys,
+                args
+        );
     }
 }

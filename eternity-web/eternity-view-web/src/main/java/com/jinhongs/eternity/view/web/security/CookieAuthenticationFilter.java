@@ -30,7 +30,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        logger.info("cookie验证");
+        logger.info("token验证");
         String token = Optional.ofNullable(request.getCookies())
                 .stream()
                 .flatMap(Arrays::stream)
@@ -38,14 +38,14 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
-        // TODO 需要改成JWT或者其他认证
+
         if (token == null) {
-            log.info("请求不包含cookie");
+            log.info("请求不包含token");
             // 没有获得cookie，证明登录过期或者第一次访问，直接放行给SpringSecurity处理
             filterChain.doFilter(request, response);
             return;
         }
-        SecurityUserDetailsImpl securityUserDetails = (SecurityUserDetailsImpl) redisClient.get(RedisConstants.getBaseSessionAdmin(token));
+        SecurityUserDetailsImpl securityUserDetails = (SecurityUserDetailsImpl) redisClient.get(RedisConstants.getViewSessionToken(token));
 
         if (securityUserDetails == null) {
             log.info("登录已过期");

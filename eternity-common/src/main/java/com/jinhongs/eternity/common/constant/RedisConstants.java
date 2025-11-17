@@ -17,15 +17,30 @@ public class RedisConstants {
      */
     public static final String BASE_DATA = BASE + "data:";
 
-    /**
-     * 登录凭证
-     */
-    public static final String BASE_SESSION = BASE + "token:";
+    // admin用户登录的token存储
+    public static final String BASE_ADMIN_SESSION_TOKEN = BASE + "admin:session:token:%s";
+    // admin每个用户id的登录平台&数量存储
+    public static final String BASE_ADMIN_SESSION_PLATFORM_USER = BASE + "admin:session:user:%s:%d";
 
-    public static final String BASE_SESSION_ADMIN = BASE_SESSION + "admin:%s";
-    public static final String BASE_SESSION_VIEW = BASE_SESSION + "view:";
+    // admin用户登录的token存储
+    public static final String BASE_VIEW_SESSION_TOKEN = BASE + "view:session:token:%s";
+    // admin每个用户id的登录平台&数量存储
+    public static final String BASE_VIEW_SESSION_PLATFORM_USER = BASE + "view:session:user:%s:%d";
 
-    public static String getBaseSessionAdmin(String token) {
-        return String.format(BASE_SESSION_ADMIN, token);
+
+    public static String getAdminSessionToken(String token) {
+        return String.format(BASE_ADMIN_SESSION_TOKEN, token);
+    }
+
+    public static String getAdminSessionUser(String platform, long userId) {
+        return String.format(BASE_ADMIN_SESSION_PLATFORM_USER, platform, userId);
+    }
+
+    public static String getViewSessionToken(String token) {
+        return String.format(BASE_VIEW_SESSION_TOKEN, token);
+    }
+
+    public static String getViewSessionUser(String platform, long userId) {
+        return String.format(BASE_VIEW_SESSION_PLATFORM_USER, platform, userId);
     }
 }

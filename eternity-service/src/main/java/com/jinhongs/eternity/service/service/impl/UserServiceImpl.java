@@ -1,5 +1,6 @@
 package com.jinhongs.eternity.service.service.impl;
 
+import com.jinhongs.eternity.common.constant.LoginPlatform;
 import com.jinhongs.eternity.common.constant.RedisConstants;
 import com.jinhongs.eternity.common.constant.UserInfoConstants;
 import com.jinhongs.eternity.common.enums.RegisterIdentityTypeEnum;
@@ -12,6 +13,7 @@ import com.jinhongs.eternity.model.entity.UserInfo;
 import com.jinhongs.eternity.service.model.converter.ServiceUserConverter;
 import com.jinhongs.eternity.service.model.dto.UserLoginDTO;
 import com.jinhongs.eternity.service.model.dto.UserRegisterDTO;
+import com.jinhongs.eternity.service.model.dto.security.SecurityUserDetailsImpl;
 import com.jinhongs.eternity.service.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -27,7 +29,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -103,7 +108,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(UserLoginDTO userLoginDTO) {
+    public String adminLogin(UserLoginDTO userLoginDTO) {
+        // 登录认证
+        SecurityUserDetailsImpl userDetails = usernameLoginAuthentication(userLoginDTO);
+
+        // 生成一个uuid，并把对应的用户信息存储在redis中
+        String uuid = java.util.UUID.randomUUID().toString();
+
+        // 设置用户会话token
+        String sessionTokenKey = RedisConstants.getAdminSessionToken(uuid);
+        redisClient.setEx(sessionTokenKey, userDetails, 15, TimeUnit.DAYS);
+
+        // 添加登录记录并清理超限会话
+        String userSessionKey = RedisConstants.getAdminSessionUser(LoginPlatform.WEB, userDetails.getId());
+        redisClient.addToZSet(userSessionKey, uuid, System.currentTimeMillis());
+
+        // 直接清理，保持最多WEB_NUMBER个会话
+        cleanExcessSessions(userSessionKey, LoginPlatform.WEB_NUMBER, RedisConstants::getAdminSessionToken);
+
+        log.info("admin登录成功：{}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        return uuid;
+    }
+
+    @Override
+    public String viewLogin(UserLoginDTO userLoginDTO) {
+        // 登录认证
+        SecurityUserDetailsImpl userDetails = usernameLoginAuthentication(userLoginDTO);
+
+        // 生成一个uuid，并把对应的用户信息存储在redis中
+        String uuid = java.util.UUID.randomUUID().toString();
+
+        // 设置用户会话token
+        String sessionTokenKey = RedisConstants.getViewSessionToken(uuid);
+        redisClient.setEx(sessionTokenKey, userDetails, 15, TimeUnit.DAYS);
+
+        // 添加登录记录并清理超限会话
+        String userSessionKey = RedisConstants.getViewSessionUser(LoginPlatform.WEB, userDetails.getId());
+        redisClient.addToZSet(userSessionKey, uuid, System.currentTimeMillis());
+
+        // 直接清理，保持最多WEB_NUMBER个会话
+        cleanExcessSessions(userSessionKey, LoginPlatform.WEB_NUMBER, RedisConstants::getViewSessionToken);
+
+        log.info("view登录成功：{}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        return uuid;
+    }
+
+    /**
+     * login认证
+     */
+    private SecurityUserDetailsImpl usernameLoginAuthentication(UserLoginDTO userLoginDTO) {
         // 1. 创建未认证的 Token
         Authentication authRequest = new UsernamePasswordAuthenticationToken(
                 userLoginDTO.getUsername(),
@@ -118,14 +173,37 @@ public class UserServiceImpl implements UserService {
         // 3. 手动设置上下文
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 4. 生成令牌(如有需要可以同时返回用户信息)
-        // 生成一个uuid，并把对应的用户信息存储在redis中
-        String uuid = java.util.UUID.randomUUID().toString();
-        // TODO，这里应该使用jwt或者其他的能表明用户信息的键，这样用户已登录的时候，直接查询返回，就不用重新存数据了
-        redisClient.setEx(RedisConstants.getBaseSessionAdmin(uuid), SecurityContextHolder.getContext().getAuthentication().getPrincipal(), 15, TimeUnit.DAYS);
+        // 4. 返回用户信息
+        return (SecurityUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
-        log.info("登录成功：{}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    /**
+     * 清理超出数量限制的会话，保留最新的指定数量
+     */
+    private void cleanExcessSessions(String userSessionKey, int maxSessions, Function<String, String> getRedisKey) {
+        // 当前会话数量
+        Long sessionCount = redisClient.getZSetSize(userSessionKey);
+        if (sessionCount != null && sessionCount > maxSessions) {
+            // 需要删除的会话数量
+            long sessionsToRemove = sessionCount - maxSessions;
+            // 获取需要删除的cookie
+            Set<String> expiredUuids = redisClient.getZSetRange(userSessionKey, 0, sessionsToRemove - 1)
+                    .stream()
+                    .map(Object::toString)
+                    .collect(Collectors.toSet());
 
-        return uuid;
+            // 需要删除的cookie不为空
+            if (!expiredUuids.isEmpty()) {
+                // 构建删除key
+                Set<String> tokenKeys = expiredUuids.stream()
+                        .map(getRedisKey)
+                        .collect(Collectors.toSet());
+                // 删除cookie
+                long removedCount = redisClient.removeZSetRangeByRank(userSessionKey, 0, sessionsToRemove - 1);
+                redisClient.deleteBatch(tokenKeys);
+
+                log.info("会话数量超限，移除{}个最早登录的会话", removedCount);
+            }
+        }
     }
 }
