@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @Tag(name = "登录接口")
@@ -52,6 +54,7 @@ public class UserController {
         // 配置 Cookie 属性 cookie不设置过期时间，所有的过期在Redis上直接控制
         cookie.setPath("/");                  // 生效路径：全站
         cookie.setHttpOnly(true);             // 禁止 JavaScript 访问
+        // cookie.setSecure(true);              // 确保cookie只在HTTPS环境下传输，开发环境下关闭
         response.addCookie(cookie);
         return ResponseResultUtils.success();
     }

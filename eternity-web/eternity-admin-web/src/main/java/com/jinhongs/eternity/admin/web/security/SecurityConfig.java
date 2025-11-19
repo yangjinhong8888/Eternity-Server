@@ -13,6 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -92,6 +98,27 @@ public class SecurityConfig {
 
 
     /**
+     * 配置跨域资源共享(CORS)源
+     * 允许来自任何域的请求，并设置允许的方法和头部
+     *
+     * @return CorsConfigurationSource CORS配置源实例
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+
+    /**
      * 配置安全过滤器链，定义HTTP请求的安全策略
      *
      * @param http HttpSecurity对象，用于配置Web安全
@@ -133,9 +160,10 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 // 禁用“记住我”功能
                 .rememberMe(AbstractHttpConfigurer::disable)
+                // 启用CORS支持并配置允许跨域请求的规则，如允许的域名、方法和头部等
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 关闭 csrf CSRF（跨站请求伪造）是一种网络攻击，攻击者通过欺骗已登录用户，诱使他们在不知情的情况下向受信任的网站发送请求。
                 .csrf(AbstractHttpConfigurer::disable) // 基于token，不需要csrf
-                .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(
                         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ); // 基于token，不需要session
