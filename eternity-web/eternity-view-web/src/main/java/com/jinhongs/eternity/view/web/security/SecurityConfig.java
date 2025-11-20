@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // 启用方法级安全注解
 public class SecurityConfig {
 
     /**
@@ -129,22 +131,20 @@ public class SecurityConfig {
                 )
                 // 开启授权保护
                 .authorizeHttpRequests(authorize -> authorize
-                        // 不需要认证的地址有哪些
-                        .requestMatchers(
-                                "/v2/api-docs/**",
-                                "/v3/api-docs/**",
-                                "/doc.html",
-                                "/swagger-resources/**",
-                                "/webjars/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/user/login",
-                                "/user/register"
-                        ).permitAll() // 允许访问的资源
-                        // 对所有请求开启授权保护
+                        // 生产环境要限制api接口对外开放
+                        // .requestMatchers(
+                        //         "/v2/api-docs/**",
+                        //         "/v3/api-docs/**",
+                        //         "/doc.html",
+                        //         "/swagger-resources/**",
+                        //         "/webjars/**",
+                        //         "/swagger-ui/**",
+                        //         "/swagger-ui.html"
+                        // ).denyAll()
+                        // 允许访问所有的资源，需要登录后才能访问的资源使用注解 @PreAuthorize("isAuthenticated()") 进行限制
                         .anyRequest()
-                        // 已认证的请求会被自动授权
-                        .authenticated()
+                        // 认证
+                        .permitAll() // 允许访问所有的资源
                 )
                 // 禁用默认表单登录验证 使用REST接口进行登录验证
                 .formLogin(AbstractHttpConfigurer::disable)

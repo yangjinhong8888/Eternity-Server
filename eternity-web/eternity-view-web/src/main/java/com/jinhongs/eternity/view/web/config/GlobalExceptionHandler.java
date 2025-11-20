@@ -103,6 +103,9 @@ public class GlobalExceptionHandler {
         return ResponseResultUtils.result(ResponseCode.NOT_FOUND);
     }
 
+    /**
+     * Eternity通用异常处理器
+     */
     @ExceptionHandler(GeneralException.class)
     public ResponseResult<Void> handleNoHandlerFound(GeneralException e) {
         return ResponseResultUtils.result(ResponseCode.FAIL, e.getMessage());
@@ -116,11 +119,13 @@ public class GlobalExceptionHandler {
     //     return ResponseResultUtils.result(ResponseCode.PARAM_INVALID);
     // }
 
+
     /**
      * 处理运行时异常
      */
     @ExceptionHandler(RuntimeException.class)
     public ResponseResult<Void> handleNoHandlerFound(RuntimeException e) {
+        log.info("异常");
         return ResponseResultUtils.result(ResponseCode.FAIL, e.getMessage());
     }
 

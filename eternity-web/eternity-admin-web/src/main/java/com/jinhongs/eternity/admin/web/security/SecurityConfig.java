@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // 启用方法级安全注解
 public class SecurityConfig {
 
     /**
@@ -131,6 +133,7 @@ public class SecurityConfig {
                 // 开启授权保护
                 .authorizeHttpRequests(authorize -> authorize
                         // 不需要认证的地址有哪些
+                        // 只配置真正的公共资源，其他的接口权限使用注解在接口上配置
                         .requestMatchers(
                                 "/v2/api-docs/**",
                                 "/v3/api-docs/**",
@@ -138,13 +141,11 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/user/login",
-                                "/user/register"
-                        ).permitAll() // 允许访问的资源
-                        // 对所有请求开启授权保护
+                                "/swagger-ui.html"
+                        ).permitAll() // 允许访问的资源 .denyAll() 生成环境也要限制这些接口对外开放
+                        // 对所有请求开启授权保护，已认证的请求会被自动授权
                         .anyRequest()
-                        // 已认证的请求会被自动授权
+                        // 认证
                         .authenticated()
                 )
                 // 接口请求时，Cookie校验过滤器

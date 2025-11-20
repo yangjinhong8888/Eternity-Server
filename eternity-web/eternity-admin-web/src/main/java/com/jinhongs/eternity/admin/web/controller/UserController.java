@@ -9,6 +9,7 @@ import com.jinhongs.eternity.common.utils.result.ResponseResultUtils;
 import com.jinhongs.eternity.service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -35,6 +36,7 @@ public class UserController {
 
     @Operation(summary = "注册账号")
     @PostMapping("/register")
+    @PermitAll // 允许所有来源访问
     public ResponseResult<String> register(@Valid @RequestBody UserRegisterParams userRegisterParams) {
 
         boolean register = userService.register(ControllerUserConverter.INSTANCE.toUserRegisterDTO(userRegisterParams));
@@ -45,6 +47,7 @@ public class UserController {
 
     @Operation(summary = "登录接口")
     @PostMapping("/login")
+    @PermitAll // 允许所有来源访问
     public ResponseResult<Void> login(@Valid @RequestBody UserLoginParams userLoginParams, HttpServletResponse response) {
 
         String uuid = userService.adminLogin(ControllerUserConverter.INSTANCE.toUserLoginDTO(userLoginParams));

@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +59,7 @@ public class UserController {
 
     @Operation(summary = "查询用户信息接口")
     @PostMapping("/getUserInfo")
+    @PreAuthorize("isAuthenticated()") // 权限不足时，会抛出AuthorizationDeniedException 最后被RuntimeException 捕获
     public ResponseResult<String> getUserInfo() {
         return ResponseResultUtils.success("查到了用户信息");
     }

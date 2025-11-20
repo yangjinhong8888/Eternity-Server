@@ -103,6 +103,9 @@ public class GlobalExceptionHandler {
         return ResponseResultUtils.result(ResponseCode.NOT_FOUND);
     }
 
+    /**
+     * Eternity通用异常处理器
+     */
     @ExceptionHandler(GeneralException.class)
     public ResponseResult<Void> handleNoHandlerFound(GeneralException e) {
         return ResponseResultUtils.result(ResponseCode.FAIL, e.getMessage());
