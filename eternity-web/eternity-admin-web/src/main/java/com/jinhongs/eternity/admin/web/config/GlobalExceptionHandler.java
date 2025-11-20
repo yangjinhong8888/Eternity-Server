@@ -117,6 +117,14 @@ public class GlobalExceptionHandler {
     // }
 
     /**
+     * 处理运行时异常
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseResult<Void> handleNoHandlerFound(RuntimeException e) {
+        return ResponseResultUtils.result(ResponseCode.FAIL, e.getMessage());
+    }
+
+    /**
      * 处理其他未知异常（兜底处理）
      */
     @ExceptionHandler(Exception.class)
