@@ -2,7 +2,7 @@ package com.jinhongs.eternity.dao.mysql.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.repository.CrudRepository;
-import com.jinhongs.eternity.common.exception.GeneralException;
+import com.jinhongs.eternity.common.exception.ClientException;
 import com.jinhongs.eternity.dao.mysql.mapper.*;
 import com.jinhongs.eternity.dao.mysql.model.dto.UserEntity;
 import com.jinhongs.eternity.model.entity.*;
@@ -41,7 +41,7 @@ public class UserInfoRepository extends CrudRepository<UserInfoMapper, UserInfo>
                     new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getId, userAuth.getUserId())
             );
         } else {
-            throw new GeneralException("用户不存在");
+            throw new ClientException("用户不存在");
         }
 
         // 获取用户权限

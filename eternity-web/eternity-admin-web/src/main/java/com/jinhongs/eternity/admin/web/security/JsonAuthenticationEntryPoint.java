@@ -1,5 +1,6 @@
 package com.jinhongs.eternity.admin.web.security;
 
+import com.jinhongs.eternity.common.enums.ResultCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,10 @@ import java.io.IOException;
 public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        response.setStatus(401);
+        response.setStatus(ResultCode.UNAUTHORIZED.getCode());
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-                String.format("{\"code\": %d, \"msg\": \"%s %s\"}", 401, "请登录后重试", authException.getMessage())
+                String.format("{\"code\": %d, \"msg\": \"%s\"}", 401, "未登录")
         );
     }
 }

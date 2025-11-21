@@ -4,7 +4,7 @@ import com.jinhongs.eternity.common.constant.LoginPlatform;
 import com.jinhongs.eternity.common.constant.RedisConstants;
 import com.jinhongs.eternity.common.constant.UserInfoConstants;
 import com.jinhongs.eternity.common.enums.RegisterIdentityTypeEnum;
-import com.jinhongs.eternity.common.exception.GeneralException;
+import com.jinhongs.eternity.common.exception.ClientException;
 import com.jinhongs.eternity.dao.mysql.repository.UserAuthRepository;
 import com.jinhongs.eternity.dao.mysql.repository.UserInfoRepository;
 import com.jinhongs.eternity.dao.redis.client.RedisClient;
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
             username = userRegisterDTO.getIdentifier();
             boolean existUsername = userInfoRepository.isExistUsername(username);
             if (existUsername) {
-                throw new GeneralException("用户名已存在");
+                throw new ClientException("用户名已存在");
             }
         } else {
             // 使用其他方式登录， 用户名为随机字符串
@@ -81,14 +81,14 @@ public class UserServiceImpl implements UserService {
                 existUsername = userInfoRepository.isExistUsername(username);
             }
             if (existUsername) {
-                throw new GeneralException("网络异常，请重试");
+                throw new ClientException("网络异常，请重试");
             }
         }
         userRegisterDTO.setUsername(username);
         userInfo = ServiceUserConverter.INSTANCE.toUserInfo(userRegisterDTO);
         boolean save = userInfoRepository.save(userInfo);
         if (!save) {
-            throw new GeneralException("用户信息保存失败");
+            throw new ClientException("用户信息保存失败");
         }
 
         userRegisterDTO.setUserId(userInfo.getId());
@@ -154,11 +154,16 @@ public class UserServiceImpl implements UserService {
                 userLoginDTO.getUsername(),
                 userLoginDTO.getPassword()
         );
-
-        // 2. 触发完整认证流程
-        // 这里会调用默认的UsernamePasswordAuthenticationToken处理Provider DaoAuthenticationProvider进行用户名密码的验证处理
-        // 验证失败则抛出异常(security已经封装好了UsernamePasswordAuthentication常用的异常处理，这里直接抛出就行，不用try)，验证成功时返回一个验证成功的对象
-        Authentication authentication = authenticationManager.authenticate(authRequest);
+        Authentication authentication;
+        try {
+            // 2. 触发完整认证流程
+            // 这里会调用默认的UsernamePasswordAuthenticationToken处理Provider DaoAuthenticationProvider进行用户名密码的验证处理
+            // 验证失败则抛出异常(security已经封装好了UsernamePasswordAuthentication常用的异常处理，这里直接抛出就行，不用try)，验证成功时返回一个验证成功的对象
+            authentication = authenticationManager.authenticate(authRequest);
+        } catch (RuntimeException e) {
+            log.error("RuntimeException: {}", e.getMessage(), e);
+            throw new ClientException("用户名或密码错误");
+        }
 
         // 3. 手动设置上下文
         SecurityContextHolder.getContext().setAuthentication(authentication);

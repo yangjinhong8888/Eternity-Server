@@ -1,5 +1,6 @@
 package com.jinhongs.eternity.view.web.security;
 
+import com.jinhongs.eternity.common.enums.ResultCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,10 @@ import java.io.IOException;
 public class JsonAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        response.setStatus(200);
+        response.setStatus(ResultCode.FORBIDDEN.getCode());
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-                String.format("{\"code\": %d, \"msg\": \"%s %s\"}", 403, "权限不足，请联系管理员", accessDeniedException.getMessage())
+                String.format("{\"code\": %d, \"msg\": \"%s\"}", 403, "权限不足，禁止访问，请联系管理员")
         );
     }
 }

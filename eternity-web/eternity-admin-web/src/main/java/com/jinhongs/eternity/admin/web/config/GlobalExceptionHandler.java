@@ -1,13 +1,14 @@
 package com.jinhongs.eternity.admin.web.config;
 
-import com.jinhongs.eternity.common.enums.ResponseCode;
-import com.jinhongs.eternity.common.exception.GeneralException;
-import com.jinhongs.eternity.common.utils.result.ResponseResult;
-import com.jinhongs.eternity.common.utils.result.ResponseResultUtils;
+import com.jinhongs.eternity.admin.web.utils.ResultUtils;
+import com.jinhongs.eternity.common.exception.ClientException;
+import com.jinhongs.eternity.common.exception.ServerException;
+import com.jinhongs.eternity.common.utils.result.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -31,108 +32,122 @@ public class GlobalExceptionHandler {
      * 处理请求体参数校验失败（@RequestBody + @Valid）
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseResult<Void> handleValidationError(MethodArgumentNotValidException e) {
+    public ResponseEntity<Result<Void>> handleValidationError(MethodArgumentNotValidException e) {
         List<String> errors = e.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .toList();
         log.error("MethodArgumentNotValidException参数校验失败：{}", errors);
-        return ResponseResultUtils.result(ResponseCode.PARAM_INVALID);
+        return ResultUtils.badRequest("参数校验失败");
     }
 
     /**
      * 处理请求参数校验失败（@RequestParam/@PathVariable + @Validated）
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseResult<Void> handleConstraintViolation(ConstraintViolationException e) {
+    public ResponseEntity<Result<Void>> handleConstraintViolation(ConstraintViolationException e) {
         List<String> errors = e.getConstraintViolations().stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .toList();
         log.info("ConstraintViolationException参数校验失败：{}", errors);
-        return ResponseResultUtils.result(ResponseCode.PARAM_INVALID);
+        return ResultUtils.badRequest("参数校验失败");
     }
 
     /**
      * 处理表单参数绑定失败（@ModelAttribute）
      */
     @ExceptionHandler(BindException.class)
-    public ResponseResult<Void> handleBindException(BindException e) {
+    public ResponseEntity<Result<Void>> handleBindException(BindException e) {
         List<String> errors = e.getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .toList();
         log.info("BindException参数校验失败：{}", errors);
-        return ResponseResultUtils.result(ResponseCode.PARAM_INVALID);
+        return ResultUtils.badRequest("参数校验失败");
     }
 
-    /**
-     * 处理请求方法不支持（如用 GET 访问 POST 接口）
-     */
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseResult<Void> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
-        return ResponseResultUtils.result(ResponseCode.METHOD_NOT_ALLOWED);
-    }
-
-    /**
-     * 处理请求媒体类型不支持（如用 XML 请求 JSON 接口）
-     */
-    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseResult<Void> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
-        return ResponseResultUtils.result(ResponseCode.UNSUPPORTED_MEDIA_TYPE);
-    }
 
     /**
      * 处理请求参数缺失（如缺少必需的 @RequestParam）
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseResult<Void> handleMissingParameter(MissingServletRequestParameterException e) {
-        return ResponseResultUtils.result(ResponseCode.PARAM_MISS);
+    public ResponseEntity<Result<Void>> handleMissingParameter(MissingServletRequestParameterException e) {
+        log.error("MissingServletRequestParameterException: 参数名={}, 参数类型={}", e.getParameterName(), e.getParameterType());
+        return ResultUtils.badRequest("请求参数缺失");
     }
 
     /**
      * 处理请求体解析失败（如 JSON 格式错误）
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseResult<Void> handleMessageNotReadable(HttpMessageNotReadableException e) {
-        return ResponseResultUtils.result(ResponseCode.PARAM_INVALID);
+    public ResponseEntity<Result<Void>> handleMessageNotReadable(HttpMessageNotReadableException e) {
+
+        log.error("HttpMessageNotReadableException: 请求体解析失败", e);
+        return ResultUtils.badRequest("请求体解析失败");
+    }
+
+    /**
+     * 处理请求方法不支持（如用 GET 访问 POST 接口）
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Result<Void>> handleMethodNotSupported(HttpRequestMethodNotSupportedException e) {
+        log.error("HttpRequestMethodNotSupportedException: 请求方法 {} 不被支持，支持的方法有 {}",
+                e.getMethod(),
+                String.join(", ", e.getSupportedMethods()));
+        return ResultUtils.methodNotAllowed();
+    }
+
+    /**
+     * 处理请求媒体类型不支持（如用 XML 请求 JSON 接口）
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Result<Void>> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
+
+        log.error("HttpMediaTypeNotSupportedException: 不支持的媒体类型 {}", e.getContentType());
+        return ResultUtils.unsupportedMediaType();
     }
 
     /**
      * 处理 404 未找到资源
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseResult<Void> handleNoHandlerFound(NoHandlerFoundException e) {
-        return ResponseResultUtils.result(ResponseCode.NOT_FOUND);
+    public ResponseEntity<Result<Void>> handleNoHandlerFound(NoHandlerFoundException e) {
+
+        log.error("NoHandlerFoundException: 请求路径={}，请求方法={}", e.getRequestURL(), e.getHttpMethod());
+        return ResultUtils.notFound();
     }
 
     /**
-     * Eternity通用异常处理器
+     * 客户端通用异常处理器
      */
-    @ExceptionHandler(GeneralException.class)
-    public ResponseResult<Void> handleNoHandlerFound(GeneralException e) {
-        return ResponseResultUtils.result(ResponseCode.FAIL, e.getMessage());
+    @ExceptionHandler(ClientException.class)
+    public ResponseEntity<Result<Void>> handleClientException(ClientException e) {
+        log.error("ClientException: {}", e.getMessage());
+        return ResultUtils.badRequest(e.getMessage());
     }
 
     /**
-     * 处理自定义业务异常
+     * 服务端通用异常处理器
      */
-    // @ExceptionHandler(CustomException.class)
-    // public ResponseResult<Void> handleBusinessException(CustomException e) {
-    //     return ResponseResultUtils.result(ResponseCode.PARAM_INVALID);
-    // }
+    @ExceptionHandler(ServerException.class)
+    public ResponseEntity<Result<Void>> handleServerException(ServerException e) {
+        log.error("ServerException: {}", e.getMessage());
+        return ResultUtils.internalServerError(e.getMessage());
+    }
 
     /**
      * 处理运行时异常
      */
     @ExceptionHandler(RuntimeException.class)
-    public ResponseResult<Void> handleNoHandlerFound(RuntimeException e) {
-        return ResponseResultUtils.result(ResponseCode.FAIL, e.getMessage());
+    public ResponseEntity<Result<Void>> handleRuntimeException(RuntimeException e) {
+        log.error("RuntimeException: {}", e.getMessage(), e);
+        return ResultUtils.internalServerError();
     }
 
     /**
      * 处理其他未知异常（兜底处理）
      */
     @ExceptionHandler(Exception.class)
-    public ResponseResult<Void> handleUnknownException(Exception e, HttpServletRequest request, HttpServletResponse response) {
-        log.error("出错了：{}", e);
-        return ResponseResultUtils.result(ResponseCode.UNKNOWN_ERROR);
+    public ResponseEntity<Result<Void>> handleUnknownException(Exception e, HttpServletRequest request, HttpServletResponse response) {
+        log.error("Unknown exception occurred: {}", e.getMessage(), e);
+        return ResultUtils.internalServerError(e.getMessage());
     }
 }
