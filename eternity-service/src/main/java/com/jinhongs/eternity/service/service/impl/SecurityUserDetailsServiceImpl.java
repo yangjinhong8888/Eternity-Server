@@ -4,8 +4,8 @@ import com.jinhongs.eternity.dao.mysql.model.dto.UserEntity;
 import com.jinhongs.eternity.dao.mysql.repository.UserInfoRepository;
 import com.jinhongs.eternity.service.model.converter.ServiceUserConverter;
 import com.jinhongs.eternity.service.model.dto.security.SecurityUserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,14 +19,10 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SecurityUserDetailsServiceImpl implements UserDetailsService {
 
     private final UserInfoRepository userInfoRepository;
-
-    @Autowired
-    public SecurityUserDetailsServiceImpl(UserInfoRepository userInfoRepository) {
-        this.userInfoRepository = userInfoRepository;
-    }
 
 
     @Override

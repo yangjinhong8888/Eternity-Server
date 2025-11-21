@@ -1,6 +1,6 @@
 package com.jinhongs.eternity.dao.redis.client;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +13,10 @@ import java.util.concurrent.TimeUnit;
  * Redis客户端工具类，提供对Redis各种数据类型的操作方法
  */
 @Component
+@RequiredArgsConstructor
 public class RedisClient {
 
     private final RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
-    public RedisClient(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
 
     // ======================== 通用操作 ========================
 

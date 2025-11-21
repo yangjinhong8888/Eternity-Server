@@ -15,9 +15,9 @@ import com.jinhongs.eternity.service.model.dto.UserLoginDTO;
 import com.jinhongs.eternity.service.model.dto.UserRegisterDTO;
 import com.jinhongs.eternity.service.model.dto.security.SecurityUserDetailsImpl;
 import com.jinhongs.eternity.service.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final RedisClient redisClient;
@@ -47,17 +48,6 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
 
     private final PasswordEncoder passwordEncoder;
-
-
-    @Autowired
-    public UserServiceImpl(RedisClient redisClient, UserInfoRepository userInfoRepository, UserAuthRepository userAuthRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
-        this.redisClient = redisClient;
-        this.userInfoRepository = userInfoRepository;
-        this.userAuthRepository = userAuthRepository;
-        this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
-    }
-
 
     @Override
     @Transactional(

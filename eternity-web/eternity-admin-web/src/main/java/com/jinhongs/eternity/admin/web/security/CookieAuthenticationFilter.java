@@ -22,6 +22,7 @@ import java.util.Optional;
 /**
  * 自定义认证过滤器，作为接口请求对cookie的验证
  * OncePerRequestFilter	确保每个请求只执行一次过滤逻辑，这里用来作为接口请求对cookie的验证
+ * 每一个请求都会通过过滤器，区别是，不需要认证的接口通过过滤器之后，会直接跳过过滤器设置的身份验证
  */
 @Slf4j
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
@@ -30,7 +31,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        logger.info("token验证");
+        log.info("token验证");
         String token = Optional.ofNullable(request.getCookies())
                 .stream()
                 .flatMap(Arrays::stream)
@@ -41,7 +42,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
         if (token == null) {
             log.info("请求不包含token");
-            // 没有获得cookie，证明登录过期或者第一次访问，直接放行给SpringSecurity处理
+            // 没有获得cookie，证明登录过期或者第一次访问，直接放行给SpringSecurity处理, 或者直接构造response返回内容然后return;
             filterChain.doFilter(request, response);
             return;
         }

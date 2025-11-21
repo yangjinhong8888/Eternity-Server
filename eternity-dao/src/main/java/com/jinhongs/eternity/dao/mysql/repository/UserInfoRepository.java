@@ -1,12 +1,12 @@
 package com.jinhongs.eternity.dao.mysql.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import com.jinhongs.eternity.common.exception.GeneralException;
 import com.jinhongs.eternity.dao.mysql.mapper.*;
 import com.jinhongs.eternity.dao.mysql.model.dto.UserEntity;
 import com.jinhongs.eternity.model.entity.*;
-import com.baomidou.mybatisplus.extension.repository.CrudRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import java.util.List;
  * </p>
  */
 @Component
+@RequiredArgsConstructor
 public class UserInfoRepository extends CrudRepository<UserInfoMapper, UserInfo> {
 
     private final UserInfoMapper userInfoMapper;
@@ -29,15 +30,6 @@ public class UserInfoRepository extends CrudRepository<UserInfoMapper, UserInfo>
     private final PermissionMapper permissionMapper;
 
     private final UserAuthMapper userAuthMapper;
-
-    @Autowired
-    public UserInfoRepository(UserInfoMapper userInfoMapper, UserRoleMapper userRoleMapper, RolePermissionMapper rolePermissionMapper, PermissionMapper permissionMapper, UserAuthMapper userAuthMapper) {
-        this.userInfoMapper = userInfoMapper;
-        this.userRoleMapper = userRoleMapper;
-        this.rolePermissionMapper = rolePermissionMapper;
-        this.permissionMapper = permissionMapper;
-        this.userAuthMapper = userAuthMapper;
-    }
 
     public UserEntity findUserIdByUserName(String username) {
         UserAuth userAuth = this.userAuthMapper.selectOne(
