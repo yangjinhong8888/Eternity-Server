@@ -19,7 +19,7 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(ResultCode.FORBIDDEN.getCode());
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-                String.format("{\"code\": %d, \"msg\": \"%s\"}", 403, "权限不足，禁止访问，请联系管理员")
+                String.format("{\"code\": %d, \"message\": \"%s\"}", 403, "权限不足，禁止访问，请联系管理员")
         );
     }
 }

@@ -17,7 +17,7 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(ResultCode.UNAUTHORIZED.getCode());
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().write(
-                String.format("{\"code\": %d, \"msg\": \"%s\"}", 401, "未登录")
+                String.format("{\"code\": %d, \"message\": \"%s\"}", 401, "未登录")
         );
     }
 }
