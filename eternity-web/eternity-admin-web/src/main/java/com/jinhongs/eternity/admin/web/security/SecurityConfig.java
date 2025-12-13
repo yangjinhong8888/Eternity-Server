@@ -1,5 +1,6 @@
 package com.jinhongs.eternity.admin.web.security;
 
+import com.jinhongs.eternity.dao.redis.client.RedisClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -70,8 +71,8 @@ public class SecurityConfig {
       自定义自定义认证过滤器
      */
     @Bean
-    public CookieAuthenticationFilter cookieAuthenticationFilter() {
-        return new CookieAuthenticationFilter();
+    public CookieAuthenticationFilter cookieAuthenticationFilter(RedisClient redisClient) {
+        return new CookieAuthenticationFilter(redisClient);
     }
 
     /**
@@ -126,7 +127,8 @@ public class SecurityConfig {
      * @throws Exception 配置过程中可能抛出的异常
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           CookieAuthenticationFilter cookieAuthenticationFilter) throws Exception {
         http
                 // 开启授权保护
                 .authorizeHttpRequests(authorize -> authorize
@@ -149,7 +151,7 @@ public class SecurityConfig {
                         .authenticated()
                 )
                 // 接口请求时，Cookie校验过滤器
-                .addFilterBefore(cookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // 异常捕获
                 .exceptionHandling(handling -> handling
                         // 处理未登录的 401 响应

@@ -43,6 +43,9 @@ public class UserInfoRepository extends CrudRepository<UserInfoMapper, UserInfo>
         } else {
             throw new ClientException("用户不存在");
         }
+        if (userInfo == null) {
+            throw new ClientException("用户不存在");
+        }
 
         // 获取用户权限
         // 根据用户ID获取角色ID列表

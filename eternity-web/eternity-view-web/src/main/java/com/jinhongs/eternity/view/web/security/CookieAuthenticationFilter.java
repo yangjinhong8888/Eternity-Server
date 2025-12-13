@@ -9,7 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,41 +24,53 @@ import java.util.Optional;
  * OncePerRequestFilter	确保每个请求只执行一次过滤逻辑，这里用来作为接口请求对cookie的验证
  */
 @Slf4j
+@RequiredArgsConstructor
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
-    @Autowired
-    private RedisClient redisClient;
+    private static final String TOKEN_COOKIE_NAME = "token";
+
+    private final RedisClient redisClient;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.info("token验证");
-        String token = Optional.ofNullable(request.getCookies())
-                .stream()
-                .flatMap(Arrays::stream)
-                .filter(c -> "token".equals(c.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse(null);
-
+        String token = resolveToken(request);
         if (token == null) {
             log.info("请求不包含token");
             // 没有获得cookie，证明登录过期或者第一次访问，直接放行给SpringSecurity处理
             filterChain.doFilter(request, response);
             return;
         }
-        SecurityUserDetailsImpl securityUserDetails = (SecurityUserDetailsImpl) redisClient.get(RedisConstants.getViewSessionToken(token));
-
+        SecurityUserDetailsImpl securityUserDetails = findSecurityUser(token);
         if (securityUserDetails == null) {
             log.info("登录已过期");
             // 如果有cookie，但是查不到用户信息，则证明登录过期，或者伪造cookie登录，放行给SpringSecurity处理
             filterChain.doFilter(request, response);
             return;
         }
+        setAuthentication(securityUserDetails);
+        filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getCookies())
+                .stream()
+                .flatMap(Arrays::stream)
+                .filter(cookie -> TOKEN_COOKIE_NAME.equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
+    }
+
+    private SecurityUserDetailsImpl findSecurityUser(String token) {
+        return (SecurityUserDetailsImpl) redisClient.get(RedisConstants.getViewSessionToken(token));
+    }
+
+    private void setAuthentication(SecurityUserDetailsImpl securityUserDetails) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 securityUserDetails,
                 null,
                 securityUserDetails.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(request, response);
     }
 }

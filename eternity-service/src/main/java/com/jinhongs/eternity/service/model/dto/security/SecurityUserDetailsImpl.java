@@ -36,7 +36,7 @@ public class SecurityUserDetailsImpl implements UserDetails {
     //----------------- UserDetails 接口方法实现 -----------------
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+        return this.authorities == null ? List.of() : this.authorities;
     }
 
     @Override
@@ -51,21 +51,21 @@ public class SecurityUserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return this.accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return this.accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return this.credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return this.enabled;
     }
 }

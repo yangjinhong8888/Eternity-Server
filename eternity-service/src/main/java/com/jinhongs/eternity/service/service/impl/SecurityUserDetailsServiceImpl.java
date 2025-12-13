@@ -1,5 +1,6 @@
 package com.jinhongs.eternity.service.service.impl;
 
+import com.jinhongs.eternity.common.exception.ClientException;
 import com.jinhongs.eternity.dao.mysql.model.dto.UserEntity;
 import com.jinhongs.eternity.dao.mysql.repository.UserInfoRepository;
 import com.jinhongs.eternity.service.model.converter.ServiceUserConverter;
@@ -28,14 +29,15 @@ public class SecurityUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public SecurityUserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
         // 获取用户基础信息
-        UserEntity userEntity;
         try {
-            userEntity = userInfoRepository.findUserIdByUserName(username);
+            UserEntity userEntity = userInfoRepository.findUserIdByUserName(username);
+            return ServiceUserConverter.INSTANCE.toSecurityUserDetailsImpl(userEntity);
+        } catch (ClientException e) {
+            log.warn("用户不存在: {}", username);
+            throw new UsernameNotFoundException("用户不存在", e);
         } catch (Exception e) {
-            log.error("用户不存在: {}", username);
-            throw new UsernameNotFoundException("用户不存在");
+            log.error("查询用户信息失败: {}", username, e);
+            throw new UsernameNotFoundException("用户不存在", e);
         }
-        // 返回Security所需形式的用户信息
-        return ServiceUserConverter.INSTANCE.toSecurityUserDetailsImpl(userEntity);
     }
 }

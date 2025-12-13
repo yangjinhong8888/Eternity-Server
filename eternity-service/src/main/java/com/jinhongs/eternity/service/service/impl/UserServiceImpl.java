@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private static final int SESSION_EXPIRE_DAYS = 15;
+
     private final RedisClient redisClient;
 
     private final UserInfoRepository userInfoRepository;
@@ -62,34 +64,11 @@ public class UserServiceImpl implements UserService {
         userRegisterDTO.setCredential(passwordEncoder.encode(userRegisterDTO.getCredential()));
 
         // 用户信息处理
-        UserInfo userInfo;
-        String username;
-        if (RegisterIdentityTypeEnum.USERNAME.is(userRegisterDTO.getIdentityType())) {
-            // 使用用户名验证方式登录，用户名为输入凭证
-            username = userRegisterDTO.getIdentifier();
-            boolean existUsername = userInfoRepository.isExistUsername(username);
-            if (existUsername) {
-                throw new ClientException("用户名已存在");
-            }
-        } else {
-            // 使用其他方式登录， 用户名为随机字符串
-            username = UserInfoConstants.USERNAME + RandomStringUtils.secureStrong().next(10, true, true);
-            boolean existUsername = userInfoRepository.isExistUsername(username);
-            // 尝试生成三次随机字符串，如果全都重复则返回异常
-            for (int i = 0; i < 3 && !existUsername; ++i) {
-                username = UserInfoConstants.USERNAME + RandomStringUtils.secureStrong().next(10, true, true);
-                existUsername = userInfoRepository.isExistUsername(username);
-            }
-            if (existUsername) {
-                throw new ClientException("网络异常，请重试");
-            }
-        }
+        String username = resolveUsername(userRegisterDTO);
         userRegisterDTO.setUsername(username);
-        userInfo = ServiceUserConverter.INSTANCE.toUserInfo(userRegisterDTO);
-        boolean save = userInfoRepository.save(userInfo);
-        if (!save) {
-            throw new ClientException("用户信息保存失败");
-        }
+
+        UserInfo userInfo = ServiceUserConverter.INSTANCE.toUserInfo(userRegisterDTO);
+        saveUserInfo(userInfo);
 
         userRegisterDTO.setUserId(userInfo.getId());
         UserAuth userAuth = ServiceUserConverter.INSTANCE.toUserAuth(userRegisterDTO);
@@ -99,50 +78,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String adminLogin(UserLoginDTO userLoginDTO) {
-        // 登录认证
-        SecurityUserDetailsImpl userDetails = usernameLoginAuthentication(userLoginDTO);
-
-        // 生成一个uuid，并把对应的用户信息存储在redis中
-        String uuid = java.util.UUID.randomUUID().toString();
-
-        // 设置用户会话token
-        String sessionTokenKey = RedisConstants.getAdminSessionToken(uuid);
-        redisClient.setEx(sessionTokenKey, userDetails, 15, TimeUnit.DAYS);
-
-        // 添加登录记录并清理超限会话
-        String userSessionKey = RedisConstants.getAdminSessionUser(LoginPlatform.WEB, userDetails.getId());
-        redisClient.addToZSet(userSessionKey, uuid, System.currentTimeMillis());
-
-        // 直接清理，保持最多WEB_NUMBER个会话
-        cleanExcessSessions(userSessionKey, LoginPlatform.WEB_NUMBER, RedisConstants::getAdminSessionToken);
-
-        log.info("admin登录成功：{}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        return uuid;
+        return login(userLoginDTO,
+                RedisConstants::getAdminSessionToken,
+                userId -> RedisConstants.getAdminSessionUser(LoginPlatform.WEB, userId),
+                "admin");
     }
 
     @Override
     public String viewLogin(UserLoginDTO userLoginDTO) {
-        // 登录认证
-        SecurityUserDetailsImpl userDetails = usernameLoginAuthentication(userLoginDTO);
-
-        // 生成一个uuid，并把对应的用户信息存储在redis中
-        String uuid = java.util.UUID.randomUUID().toString();
-
-        // 设置用户会话token
-        String sessionTokenKey = RedisConstants.getViewSessionToken(uuid);
-        redisClient.setEx(sessionTokenKey, userDetails, 15, TimeUnit.DAYS);
-
-        // 添加登录记录并清理超限会话
-        String userSessionKey = RedisConstants.getViewSessionUser(LoginPlatform.WEB, userDetails.getId());
-        redisClient.addToZSet(userSessionKey, uuid, System.currentTimeMillis());
-
-        // 直接清理，保持最多WEB_NUMBER个会话
-        cleanExcessSessions(userSessionKey, LoginPlatform.WEB_NUMBER, RedisConstants::getViewSessionToken);
-
-        log.info("view登录成功：{}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        return uuid;
+        return login(userLoginDTO,
+                RedisConstants::getViewSessionToken,
+                userId -> RedisConstants.getViewSessionUser(LoginPlatform.WEB, userId),
+                "view");
     }
 
     /**
@@ -176,29 +123,93 @@ public class UserServiceImpl implements UserService {
      * 清理超出数量限制的会话，保留最新的指定数量
      */
     private void cleanExcessSessions(String userSessionKey, int maxSessions, Function<String, String> getRedisKey) {
-        // 当前会话数量
         Long sessionCount = redisClient.getZSetSize(userSessionKey);
-        if (sessionCount != null && sessionCount > maxSessions) {
-            // 需要删除的会话数量
-            long sessionsToRemove = sessionCount - maxSessions;
-            // 获取需要删除的cookie
-            Set<String> expiredUuids = redisClient.getZSetRange(userSessionKey, 0, sessionsToRemove - 1)
-                    .stream()
-                    .map(Object::toString)
-                    .collect(Collectors.toSet());
+        if (sessionCount == null || sessionCount <= maxSessions) {
+            return;
+        }
 
-            // 需要删除的cookie不为空
-            if (!expiredUuids.isEmpty()) {
-                // 构建删除key
-                Set<String> tokenKeys = expiredUuids.stream()
-                        .map(getRedisKey)
-                        .collect(Collectors.toSet());
-                // 删除cookie
-                long removedCount = redisClient.removeZSetRangeByRank(userSessionKey, 0, sessionsToRemove - 1);
-                redisClient.deleteBatch(tokenKeys);
+        long sessionsToRemove = sessionCount - maxSessions;
+        Set<String> expiredUuids = redisClient.getZSetRange(userSessionKey, 0, sessionsToRemove - 1)
+                .stream()
+                .map(Object::toString)
+                .collect(Collectors.toSet());
 
-                log.info("会话数量超限，移除{}个最早登录的会话", removedCount);
+        if (expiredUuids.isEmpty()) {
+            return;
+        }
+
+        Set<String> tokenKeys = expiredUuids.stream()
+                .map(getRedisKey)
+                .collect(Collectors.toSet());
+        long removedCount = redisClient.removeZSetRangeByRank(userSessionKey, 0, sessionsToRemove - 1);
+        redisClient.deleteBatch(tokenKeys);
+
+        log.info("会话数量超限，移除{}个最早登录的会话", removedCount);
+    }
+
+    /**
+     * 登录的共用流程
+     */
+    private String login(UserLoginDTO userLoginDTO,
+                         Function<String, String> sessionTokenKeyProvider,
+                         Function<Long, String> sessionUserKeyProvider,
+                         String loginTag) {
+        SecurityUserDetailsImpl userDetails = usernameLoginAuthentication(userLoginDTO);
+
+        String uuid = java.util.UUID.randomUUID().toString();
+        String sessionTokenKey = sessionTokenKeyProvider.apply(uuid);
+        redisClient.setEx(sessionTokenKey, userDetails, SESSION_EXPIRE_DAYS, TimeUnit.DAYS);
+
+        String userSessionKey = sessionUserKeyProvider.apply(userDetails.getId());
+        redisClient.addToZSet(userSessionKey, uuid, System.currentTimeMillis());
+        cleanExcessSessions(userSessionKey, LoginPlatform.WEB_NUMBER, sessionTokenKeyProvider);
+
+        log.info("{}登录成功：{}", loginTag, SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return uuid;
+    }
+
+    /**
+     * 根据注册方式获取用户名
+     */
+    private String resolveUsername(UserRegisterDTO userRegisterDTO) {
+        if (RegisterIdentityTypeEnum.USERNAME.is(userRegisterDTO.getIdentityType())) {
+            String username = userRegisterDTO.getIdentifier();
+            boolean existUsername = userInfoRepository.isExistUsername(username);
+            if (existUsername) {
+                throw new ClientException("用户名已存在");
+            }
+            return username;
+        }
+        return generateRandomUsername();
+    }
+
+    /**
+     * 持久化用户信息
+     */
+    private void saveUserInfo(UserInfo userInfo) {
+        boolean save = userInfoRepository.save(userInfo);
+        if (!save) {
+            throw new ClientException("用户信息保存失败");
+        }
+    }
+
+    /**
+     * 生成随机用户名
+     */
+    private String generateRandomUsername() {
+        for (int i = 0; i < 3; i++) {
+            String username = randomUsername();
+            if (!userInfoRepository.isExistUsername(username)) {
+                return username;
             }
         }
+        throw new ClientException("网络异常，请重试");
+    }
+
+    /**
+     * 生成带前缀的随机用户名
+     */
+    private String randomUsername() {
+        return UserInfoConstants.USERNAME + RandomStringUtils.secureStrong().next(10, true, true);
     }
 }
