@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.jinhongs.eternity.view.web.security.ApiPermissionAuthorizationManager;
 import com.jinhongs.eternity.view.web.security.annotation.PassAllPathCollector;
 
 @Configuration
@@ -126,7 +127,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            CookieAuthenticationFilter cookieAuthenticationFilter,
-                                           PassAllPathCollector passAllPathCollector) throws Exception {
+                                           PassAllPathCollector passAllPathCollector,
+                                           ApiPermissionAuthorizationManager apiPermissionAuthorizationManager) throws Exception {
         List<String> passAllPaths = passAllPathCollector.collect();
         String[] permitAllArray = Stream.concat(
                         passAllPaths.stream(),
@@ -152,7 +154,7 @@ public class SecurityConfig {
                 // 开启授权保护
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllArray).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().access(apiPermissionAuthorizationManager)
                 )
                 // 禁用默认表单登录验证 使用REST接口进行登录验证
                 .formLogin(AbstractHttpConfigurer::disable)

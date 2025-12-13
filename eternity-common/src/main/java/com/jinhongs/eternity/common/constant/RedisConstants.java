@@ -22,11 +22,15 @@ public class RedisConstants {
     // admin每个用户id的登录平台&数量存储
     public static final String BASE_ADMIN_SESSION_PLATFORM_USER = BASE + "admin:session:user:%s:%d";
 
-    // admin用户登录的token存储
+    // view用户登录的token存储
     public static final String BASE_VIEW_SESSION_TOKEN = BASE + "view:session:token:%s";
-    // admin每个用户id的登录平台&数量存储
+    // view每个用户id的登录平台&数量存储
     public static final String BASE_VIEW_SESSION_PLATFORM_USER = BASE + "view:session:user:%s:%d";
 
+    // admin接口对应权限
+    public static final String BASE_ADMIN_METHOD_PERMISSION_CACHE = BASE_CACHE + "admin:method:permission";
+    // view接口对应权限
+    public static final String BASE_VIEW_METHOD_PERMISSION_CACHE = BASE_CACHE + "view:method:permission";
 
     public static String getAdminSessionToken(String token) {
         return String.format(BASE_ADMIN_SESSION_TOKEN, token);

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.jinhongs.eternity.admin.web.security.ApiPermissionAuthorizationManager;
 import com.jinhongs.eternity.admin.web.security.annotation.PassAllPathCollector;
 
 @Configuration
@@ -132,7 +133,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            CookieAuthenticationFilter cookieAuthenticationFilter,
-                                           PassAllPathCollector passAllPathCollector) throws Exception {
+                                           PassAllPathCollector passAllPathCollector,
+                                           ApiPermissionAuthorizationManager apiPermissionAuthorizationManager) throws Exception {
         List<String> passAllPaths = passAllPathCollector.collect();
         String[] permitAllArray = Stream.concat(
                         passAllPaths.stream(),
@@ -154,10 +156,7 @@ public class SecurityConfig {
                 // 开启授权保护
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllArray).permitAll()
-                        // 对所有请求开启授权保护，已认证的请求会被自动授权
-                        .anyRequest()
-                        // 认证
-                        .authenticated()
+                        .anyRequest().access(apiPermissionAuthorizationManager)
                 )
                 // 接口请求时，Cookie校验过滤器
                 .addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
