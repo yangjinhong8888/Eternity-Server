@@ -18,7 +18,7 @@ import java.io.Serializable;
  */
 @Data
 @TableName("api_permission")
-@Schema(name = "ApiPermission", description = "")
+@Schema(name = "ApiPermission", description = "接口权限关联表")
 public class ApiPermission implements Serializable {
 
     @Serial
