@@ -5,6 +5,7 @@ import com.jinhongs.eternity.admin.web.model.dto.params.UserLoginParams;
 import com.jinhongs.eternity.admin.web.model.dto.params.UserRegisterParams;
 import com.jinhongs.eternity.admin.web.model.dto.vo.UserInfoVO;
 import com.jinhongs.eternity.admin.web.utils.ResultUtils;
+import com.jinhongs.eternity.admin.web.security.annotation.PassAll;
 import com.jinhongs.eternity.common.enums.ResultCode;
 import com.jinhongs.eternity.common.utils.result.Result;
 import com.jinhongs.eternity.service.service.UserService;
@@ -33,6 +34,7 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "注册账号")
+    @PassAll
     @PostMapping("/register")
     public ResponseEntity<Result<Void>> register(@Valid @RequestBody UserRegisterParams userRegisterParams) {
 
@@ -43,6 +45,7 @@ public class UserController {
 
 
     @Operation(summary = "登录接口")
+    @PassAll
     @PostMapping("/login")
     public ResponseEntity<Result<Void>> login(@Valid @RequestBody UserLoginParams userLoginParams, HttpServletResponse response) {
 

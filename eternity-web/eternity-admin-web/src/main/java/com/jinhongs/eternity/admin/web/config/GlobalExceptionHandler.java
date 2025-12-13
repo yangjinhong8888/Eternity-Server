@@ -19,6 +19,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
 import java.util.List;
 
@@ -131,6 +133,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result<Void>> handleServerException(ServerException e) {
         log.error("ServerException: {}", e.getMessage());
         return ResultUtils.internalServerError(e.getMessage());
+    }
+
+    /**
+     * 未登录或身份凭证缺失
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Result<Void>> handleAuthenticationException(AuthenticationException e) {
+        log.warn("未登录访问受保护资源: {}", e.getMessage());
+        return ResultUtils.unauthorized("未登录");
+    }
+
+    /**
+     * 权限不足
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Result<Void>> handleAccessDeniedException(AccessDeniedException e) {
+        log.warn("权限不足: {}", e.getMessage());
+        return ResultUtils.forbidden("权限不足");
     }
 
     /**

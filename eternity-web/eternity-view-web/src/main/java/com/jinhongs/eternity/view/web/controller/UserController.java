@@ -6,6 +6,7 @@ import com.jinhongs.eternity.view.web.model.converter.ControllerUserConverter;
 import com.jinhongs.eternity.view.web.model.dto.params.UserLoginParams;
 import com.jinhongs.eternity.view.web.model.dto.params.UserRegisterParams;
 import com.jinhongs.eternity.view.web.utils.ResultUtils;
+import com.jinhongs.eternity.view.web.security.annotation.PassAll;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
@@ -29,6 +30,7 @@ public class UserController {
 
     @Operation(summary = "注册账号")
     @PostMapping("/register")
+    @PassAll
     public ResponseEntity<Result<Void>> register(@Valid @RequestBody UserRegisterParams userRegisterParams) {
 
         boolean register = userService.register(ControllerUserConverter.INSTANCE.toUserRegisterDTO(userRegisterParams));
@@ -39,6 +41,7 @@ public class UserController {
 
     @Operation(summary = "登录接口")
     @PostMapping("/login")
+    @PassAll
     public ResponseEntity<Result<Void>> login(@Valid @RequestBody UserLoginParams userLoginParams, HttpServletResponse response) {
 
         String uuid = userService.viewLogin(ControllerUserConverter.INSTANCE.toUserLoginDTO(userLoginParams));
@@ -55,7 +58,6 @@ public class UserController {
 
     @Operation(summary = "查询用户信息接口")
     @PostMapping("/getUserInfo")
-    @PreAuthorize("isAuthenticated()") // 权限不足时，会抛出AuthorizationDeniedException 最后被RuntimeException 捕获
     public ResponseEntity<Result<Void>> getUserInfo() {
         return ResultUtils.ok();
     }

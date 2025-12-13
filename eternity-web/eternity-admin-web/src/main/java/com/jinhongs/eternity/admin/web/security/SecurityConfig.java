@@ -20,6 +20,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
+
+import com.jinhongs.eternity.admin.web.security.annotation.PassAllPathCollector;
 
 @Configuration
 @EnableWebSecurity
@@ -128,13 +131,12 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-                                           CookieAuthenticationFilter cookieAuthenticationFilter) throws Exception {
-        http
-                // 开启授权保护
-                .authorizeHttpRequests(authorize -> authorize
-                        // 不需要认证的地址有哪些
-                        // 只配置真正的公共资源，其他的接口权限使用注解在接口上配置
-                        .requestMatchers(
+                                           CookieAuthenticationFilter cookieAuthenticationFilter,
+                                           PassAllPathCollector passAllPathCollector) throws Exception {
+        List<String> passAllPaths = passAllPathCollector.collect();
+        String[] permitAllArray = Stream.concat(
+                        passAllPaths.stream(),
+                        Stream.of(
                                 "/v2/api-docs/**",
                                 "/v3/api-docs/**",
                                 "/doc.html",
@@ -144,7 +146,14 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/user/login",
                                 "/user/register"
-                        ).permitAll() // 允许访问的资源 .denyAll() 生成环境也要限制这些接口对外开放
+                        )
+                )
+                .distinct()
+                .toArray(String[]::new);
+        http
+                // 开启授权保护
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(permitAllArray).permitAll()
                         // 对所有请求开启授权保护，已认证的请求会被自动授权
                         .anyRequest()
                         // 认证

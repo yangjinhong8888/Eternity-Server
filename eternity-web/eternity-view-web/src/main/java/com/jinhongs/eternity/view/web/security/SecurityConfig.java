@@ -21,6 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
+
+import com.jinhongs.eternity.view.web.security.annotation.PassAllPathCollector;
 
 @Configuration
 @EnableWebSecurity
@@ -122,7 +125,23 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-                                           CookieAuthenticationFilter cookieAuthenticationFilter) throws Exception {
+                                           CookieAuthenticationFilter cookieAuthenticationFilter,
+                                           PassAllPathCollector passAllPathCollector) throws Exception {
+        List<String> passAllPaths = passAllPathCollector.collect();
+        String[] permitAllArray = Stream.concat(
+                        passAllPaths.stream(),
+                        Stream.of(
+                                "/v2/api-docs/**",
+                                "/v3/api-docs/**",
+                                "/doc.html",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        )
+                )
+                .distinct()
+                .toArray(String[]::new);
         http
                 .exceptionHandling(handling -> handling
                         // 处理未登录的 401 响应
@@ -132,20 +151,8 @@ public class SecurityConfig {
                 )
                 // 开启授权保护
                 .authorizeHttpRequests(authorize -> authorize
-                        // 生产环境要限制api接口对外开放
-                        // .requestMatchers(
-                        //         "/v2/api-docs/**",
-                        //         "/v3/api-docs/**",
-                        //         "/doc.html",
-                        //         "/swagger-resources/**",
-                        //         "/webjars/**",
-                        //         "/swagger-ui/**",
-                        //         "/swagger-ui.html"
-                        // ).denyAll()
-                        // 允许访问所有的资源，需要登录后才能访问的资源使用注解 @PreAuthorize("isAuthenticated()") 进行限制
-                        .anyRequest()
-                        // 认证
-                        .permitAll() // 允许访问所有的资源
+                        .requestMatchers(permitAllArray).permitAll()
+                        .anyRequest().authenticated()
                 )
                 // 禁用默认表单登录验证 使用REST接口进行登录验证
                 .formLogin(AbstractHttpConfigurer::disable)
