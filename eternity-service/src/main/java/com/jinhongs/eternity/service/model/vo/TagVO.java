@@ -18,4 +18,7 @@ public class TagVO {
 
     @Schema(description = "标签名称")
     private String tagName;
+
+    @Schema(description = "文章数量")
+    private Integer articleCount;
 }

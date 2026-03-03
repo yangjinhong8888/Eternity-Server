@@ -57,4 +57,9 @@ public interface ArticleService {
      * 查询全部标签（用于文章编辑时的标签选择）
      */
     List<TagVO> listAllTags();
+
+    /**
+     * 按标签筛选已发布文章
+     */
+    PageResult<ArticleListVO> listPublishedArticlesByTag(Long tagId, int page, int size);
 }

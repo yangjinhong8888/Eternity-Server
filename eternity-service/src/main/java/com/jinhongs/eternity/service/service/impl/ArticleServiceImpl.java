@@ -229,4 +229,32 @@ public class ArticleServiceImpl implements ArticleService {
     private SecurityUserDetailsImpl getCurrentUser() {
         return (SecurityUserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+    @Override
+    public PageResult<ArticleListVO> listPublishedArticlesByTag(Long tagId, int page, int size) {
+        List<Long> articleIds = articleTagsRepository.list(
+                new LambdaQueryWrapper<ArticleTags>().eq(ArticleTags::getTagId, tagId)
+        ).stream().map(ArticleTags::getArticleId).toList();
+
+        if (articleIds.isEmpty()) {
+            return new PageResult<>(List.of(), 0L, (long) page, (long) size);
+        }
+
+        Page<Articles> pageParam = new Page<>(page, size);
+        var result = articlesRepository.page(pageParam,
+                new LambdaQueryWrapper<Articles>()
+                        .in(Articles::getId, articleIds)
+                        .eq(Articles::getStatus, STATUS_PUBLISHED)
+                        .orderByDesc(Articles::getCreateTime)
+        );
+
+        List<ArticleListVO> records = result.getRecords().stream()
+                .map(article -> {
+                    ArticleListVO vo = ServiceArticleConverter.INSTANCE.toArticleListVO(article);
+                    vo.setTags(getTagsByArticleId(article.getId()));
+                    return vo;
+                }).toList();
+
+        return new PageResult<>(records, result.getTotal(), result.getCurrent(), result.getSize());
+    }
 }

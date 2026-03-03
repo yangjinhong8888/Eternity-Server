@@ -4,7 +4,9 @@ import com.jinhongs.eternity.common.utils.result.PageResult;
 import com.jinhongs.eternity.common.utils.result.Result;
 import com.jinhongs.eternity.service.model.vo.ArticleDetailVO;
 import com.jinhongs.eternity.service.model.vo.ArticleListVO;
+import com.jinhongs.eternity.service.model.vo.TagVO;
 import com.jinhongs.eternity.service.service.ArticleService;
+import com.jinhongs.eternity.service.service.TagService;
 import com.jinhongs.eternity.view.web.security.annotation.PassAll;
 import com.jinhongs.eternity.view.web.utils.ResultUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/article")
 @Tag(name = "博客文章接口")
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final TagService tagService;
 
     @PassAll
     @Operation(summary = "查询已发布文章详情")
@@ -40,5 +45,23 @@ public class ArticleController {
             @RequestParam(defaultValue = "10") int size) {
         PageResult<ArticleListVO> result = articleService.listPublishedArticles(page, size);
         return ResultUtils.ok(result);
+    }
+
+    @PassAll
+    @Operation(summary = "按标签筛选已发布文章")
+    @GetMapping("/list-by-tag")
+    public ResponseEntity<Result<PageResult<ArticleListVO>>> listByTag(
+            @RequestParam Long tagId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageResult<ArticleListVO> result = articleService.listPublishedArticlesByTag(tagId, page, size);
+        return ResultUtils.ok(result);
+    }
+
+    @PassAll
+    @Operation(summary = "查询所有标签（含文章数量）")
+    @GetMapping("/tags")
+    public ResponseEntity<Result<List<TagVO>>> tags() {
+        return ResultUtils.ok(tagService.listTagsWithCount());
     }
 }
