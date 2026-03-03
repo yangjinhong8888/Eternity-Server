@@ -1,5 +1,7 @@
-use eternity;
-
+CREATE DATABASE eternity
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+USE eternity;
 -- 用户表
 CREATE TABLE IF NOT EXISTS `user_info` (
     `id`           BIGINT      PRIMARY KEY AUTO_INCREMENT COMMENT '用户ID',
@@ -151,6 +153,15 @@ CREATE TABLE IF NOT EXISTS `article_categories` (
     UNIQUE KEY uk_article_category (article_id, category_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章分类表' ROW_FORMAT=DYNAMIC;
 
+-- 接口权限关联表
+CREATE TABLE IF NOT EXISTS `api_permission` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    `path` VARCHAR(255) NOT NULL COMMENT '接口路径（支持Ant风格，例如 /user/**）',
+    `http_method` VARCHAR(16) DEFAULT NULL COMMENT 'HTTP方法，NULL表示所有方法',
+    `perm_key` VARCHAR(128) NOT NULL COMMENT '所需权限标识，对应permission里的权限',
+    `create_time` BIGINT NOT NULL COMMENT '创建时间戳（毫秒）',
+    `update_time` BIGINT NOT NULL COMMENT '更新时间戳（毫秒）'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='接口与权限映射表' ROW_FORMAT=DYNAMIC;
 
 INSERT into `user_info` (username, avatar, create_time, update_time) VALUES
     ('管理员', NULL, 1700000001000, 1700000001000);
