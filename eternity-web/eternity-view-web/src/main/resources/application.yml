@@ -27,6 +27,11 @@ springdoc:
       paths-to-match: '/**'                                                             # 匹配的路径模式
       packages-to-scan: com.eternity.eternity.view.web                                    # 扫描的包路径
 
+# 上传文件静态资源配置（与 admin-web 共享同一目录）
+eternity:
+  upload:
+    dir: ./uploads
+
 # 日志配置
 logging:
   level:

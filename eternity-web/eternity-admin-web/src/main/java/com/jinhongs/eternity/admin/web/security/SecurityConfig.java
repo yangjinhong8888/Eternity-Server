@@ -147,7 +147,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/user/login",
-                                "/user/register"
+                                "/user/register",
+                                "/uploads/**"
                         )
                 )
                 .distinct()
