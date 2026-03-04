@@ -1,19 +1,27 @@
 package com.jinhongs.eternity.service.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jinhongs.eternity.common.constant.LoginPlatform;
 import com.jinhongs.eternity.common.constant.RedisConstants;
 import com.jinhongs.eternity.common.constant.UserInfoConstants;
 import com.jinhongs.eternity.common.enums.RegisterIdentityTypeEnum;
 import com.jinhongs.eternity.common.exception.ClientException;
+import com.jinhongs.eternity.common.utils.result.PageResult;
+import com.jinhongs.eternity.dao.mysql.repository.RoleRepository;
 import com.jinhongs.eternity.dao.mysql.repository.UserAuthRepository;
 import com.jinhongs.eternity.dao.mysql.repository.UserInfoRepository;
+import com.jinhongs.eternity.dao.mysql.repository.UserRoleRepository;
 import com.jinhongs.eternity.dao.redis.client.RedisClient;
 import com.jinhongs.eternity.model.entity.UserAuth;
 import com.jinhongs.eternity.model.entity.UserInfo;
+import com.jinhongs.eternity.model.entity.UserRole;
 import com.jinhongs.eternity.service.model.converter.ServiceUserConverter;
 import com.jinhongs.eternity.service.model.dto.UserLoginDTO;
 import com.jinhongs.eternity.service.model.dto.UserRegisterDTO;
 import com.jinhongs.eternity.service.model.dto.security.SecurityUserDetailsImpl;
+import com.jinhongs.eternity.service.model.vo.RoleVO;
+import com.jinhongs.eternity.service.model.vo.UserVO;
 import com.jinhongs.eternity.service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +37,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -50,6 +59,10 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final UserRoleRepository userRoleRepository;
+
+    private final RoleRepository roleRepository;
 
     @Override
     @Transactional(
@@ -211,5 +224,55 @@ public class UserServiceImpl implements UserService {
      */
     private String randomUsername() {
         return UserInfoConstants.USERNAME + RandomStringUtils.secureStrong().next(10, true, true);
+    }
+
+    @Override
+    public PageResult<UserVO> listUsers(int page, int size) {
+        Page<UserInfo> pageParam = new Page<>(page, size);
+        var result = userInfoRepository.page(pageParam);
+
+        List<UserVO> records = result.getRecords().stream().map(user -> {
+            UserVO vo = new UserVO();
+            vo.setId(user.getId());
+            vo.setUsername(user.getUsername());
+            vo.setAvatar(user.getAvatar());
+            vo.setCreateTime(user.getCreateTime());
+            vo.setRoles(getUserRoles(user.getId()));
+            return vo;
+        }).toList();
+
+        return new PageResult<>(records, result.getTotal(), result.getCurrent(), result.getSize());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void assignRoles(Long userId, List<Long> roleIds) {
+        userRoleRepository.remove(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userId));
+        if (roleIds != null && !roleIds.isEmpty()) {
+            List<UserRole> userRoles = roleIds.stream().map(roleId -> {
+                UserRole ur = new UserRole();
+                ur.setUserId(userId);
+                ur.setRoleId(roleId);
+                return ur;
+            }).toList();
+            userRoleRepository.saveBatch(userRoles, userRoles.size());
+        }
+    }
+
+    private List<RoleVO> getUserRoles(Long userId) {
+        List<Long> roleIds = userRoleRepository.list(
+            new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userId)
+        ).stream().map(UserRole::getRoleId).toList();
+
+        if (roleIds.isEmpty()) return List.of();
+
+        return roleRepository.listByIds(roleIds).stream().map(role -> {
+            RoleVO vo = new RoleVO();
+            vo.setId(role.getId());
+            vo.setRoleName(role.getRoleName());
+            vo.setRoleKey(role.getRoleKey());
+            vo.setIsEnable(role.getIsEnable());
+            return vo;
+        }).toList();
     }
 }
